@@ -1,2 +1,2 @@
 # School Management System(SMS)
-Djagno Schools Management System(sms)
+Djagno Schools Management System
