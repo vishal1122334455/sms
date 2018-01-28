@@ -92,8 +92,8 @@ class Student(models.Model):
 
 #librarian registration
 class Librarian(models.Model):
-    birthday = models.DateTimeField(default=False, null=True, blank=True)
-    gender = models.CharField(max_length=255, null=True, blank=True)
+    birthday = models.DateField(null=True, blank=True)
+    gender = models.CharField(default='male', max_length=255, null=True, blank=True)
     promotion_year = models.DateField(null=True, blank=True)
     running_position = models.CharField(max_length=255, null=True, blank=True)
     promotion_position = models.CharField(max_length=255, null=True, blank=True)
@@ -146,7 +146,10 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
     address = models.TextField(max_length=1000, null=True, blank=True)
+
+    #account type is the post of the official
     account_type = models.CharField(max_length=255, default='admin', blank=True, null=True)
+
     photo = models.ImageField(upload_to='profile/picture/', null=True, blank=True)
 
     #for account type school and other's common fields
@@ -162,6 +165,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     parent = models.ForeignKey(Parent, null=True, blank=True)
 
     #for member type student
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True, blank=True)
     classes = models.ForeignKey(Class, on_delete=models.CASCADE, null=True, blank=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, null=True, blank=True)
 
@@ -169,6 +173,8 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     librarian = models.ForeignKey(Librarian, null=True, blank=True)
 
     added_on = models.DateTimeField(auto_now_add=True)
+
+    is_school = models.BooleanField(default=False)
 
     objects = UserProfileManager()
 

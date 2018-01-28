@@ -85,6 +85,7 @@ class RegistrationForm(forms.Form):
         user.last_login = now()
 
         user.save()
+        return user
 
 
 #login form
@@ -112,3 +113,43 @@ class LoginForm(forms.Form):
         password = self.cleaned_data.get('password')
         user = authenticate(username=username, password=password)
         return user
+
+
+#teacher registration
+class RegistrationMemberForm(RegistrationForm):
+    member_type = forms.ModelChoiceField(models.AvailableUser.objects.all().exclude(pk=1))
+
+
+#add teacher form
+class TeacherForm(forms.ModelForm):
+    class Meta:
+        model = models.Teacher
+        fields = '__all__'
+
+
+#add parent form
+class ParentForm(forms.ModelForm):
+    class Meta:
+        model = models.Parent
+        fields = '__all__'
+
+
+#add school form
+class SchoolForm(forms.ModelForm):
+    class Meta:
+        model = models.School
+        fields = '__all__'
+
+
+#add student form
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = models.Student
+        fields = '__all__'
+
+
+#add librarian form
+class LibrarianForm(forms.ModelForm):
+    class Meta:
+        model = models.Librarian
+        fields = '__all__'
