@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body>
+    <h1>welcome Registration</h1>
+
+    {{ request.user.email }}
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ loginForm.as_p }}
+
+        <button type="submit">Login</button>
+    </form>
+
+    <a href="{% url 'account:registration' %}">Registration</a>
+
+</body>
+</html>

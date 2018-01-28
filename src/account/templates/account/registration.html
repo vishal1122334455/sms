@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body>
+    <h1>welcome Registration</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ regForm.as_p }}
+
+        <button type="submit">Register</button>
+    </form>
+
+    <a href="{% url 'account:login' %}">Login</a>
+
+</body>
+</html>
