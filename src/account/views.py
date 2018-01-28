@@ -3,6 +3,7 @@ from django.views import View
 from django.contrib.auth.views import login, logout
 
 from . import forms
+from administration import views
 
 #logout
 def logout_request(request):
