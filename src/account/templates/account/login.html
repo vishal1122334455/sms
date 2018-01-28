@@ -7,15 +7,17 @@
 <body>
     <h1>welcome Registration</h1>
 
-    <form method="post" enctype="multipart/form-data">
+    {{ request.user.email }}
+
+    <form method="post">
         {% csrf_token %}
 
-        {{ regForm.as_p }}
+        {{ loginForm.as_p }}
 
-        <button type="submit">Register</button>
+        <button type="submit">Login</button>
     </form>
 
-    <a href="{% url 'account:login' %}">Login</a>
+    <a href="{% url 'account:registration' %}">Registration</a>
 
 </body>
 </html>
