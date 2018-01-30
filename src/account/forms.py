@@ -116,17 +116,35 @@ class LoginForm(forms.Form):
         return user
 
 
-#teacher registration
+#Member registration
 class RegistrationMemberForm(RegistrationForm):
     member_type = forms.ModelChoiceField(models.AvailableUser.objects.all().exclude(pk=1), required=False, widget=forms.Select(attrs={'class':'input-field'}))
     school = forms.ModelChoiceField(models.School.objects.all(), required=False, widget=forms.Select(attrs={'class':'input-field'}))
 
 
 #add teacher form
+gender_list = (
+        ('male', 'Male'),
+        ('female', 'Female'),)
+
 class TeacherForm(forms.ModelForm):
+    gender = forms.ChoiceField(choices=gender_list, required=False, widget=forms.Select(attrs={'class': 'validate'}))
     class Meta:
         model = models.Teacher
         fields = '__all__'
+
+    def clean(self):
+        position = self.cleaned_data.get('position')
+        salary = self.cleaned_data.get('salary')
+        gender = self.cleaned_data.get('gender')
+
+        if not position:
+            raise forms.ValidationError("Enter teacher Position!")
+        else:
+            if not salary:
+                raise forms.ValidationError("Enter Teacher Salary!")
+            if not gender:
+                raise forms.ValidationError("Select Gender!")
 
 
 #add parent form
@@ -138,20 +156,74 @@ class ParentForm(forms.ModelForm):
 
 #add school form
 class SchoolForm(forms.ModelForm):
+    address = forms.CharField( required=False, max_length= 1000 ,widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}) )
+
     class Meta:
         model = models.School
         fields = '__all__'
 
 
+    def clean(self):
+        name = self.cleaned_data.get('name')
+        description = self.cleaned_data.get('description')
+        logo = self.cleaned_data.get('logo')
+        banner = self.cleaned_data.get('banner')
+        address = self.cleaned_data.get('address')
+        website = self.cleaned_data.get('website')
+        phone = self.cleaned_data.get('phone')
+
+        if not name:
+            raise forms.ValidationError('Enter School name!')
+        else:
+            if not address:
+                raise forms.ValidationError('Enter School Address!')
+            else:
+                if not phone:
+                    raise forms.ValidationError('Enter Phone number!')
+
 #add student form
 class StudentForm(forms.ModelForm):
+    birthday = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate datepicker'}))
+    gender = forms.ChoiceField(choices=gender_list, required=False, widget=forms.Select(attrs={'class': 'validate'}))
+
     class Meta:
         model = models.Student
         fields = '__all__'
 
+    def clean(self):
+        roll = self.cleaned_data.get('roll')
+        birthday = self.cleaned_data.get('birthday')
+        gender = self.cleaned_data.get('gender')
+        school_bus = self.cleaned_data.get('school_bus')
+
+        if not roll:
+            raise forms.ValidationError('Enter Roll!')
+        else:
+            if not birthday:
+                raise forms.ValidationError('Enter Birthday!')
+            else:
+                if not gender:
+                    raise forms.ValidationError('Select Gender!')
+                else:
+                    if not school_bus:
+                        raise forms.ValidationError('Enter School Bus!')
+
 
 #add librarian form
 class LibrarianForm(forms.ModelForm):
+    birthday = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate datepicker'}))
+    gender = forms.ChoiceField(choices=gender_list, required=False, widget=forms.Select(attrs={'class': 'validate'}))
+
     class Meta:
         model = models.Librarian
         fields = '__all__'
+
+    def clean(self):
+        birthday = self.cleaned_data.get('birthday')
+        gender = self.cleaned_data.get('gender')
+
+        if not birthday:
+            raise forms.ValidationError('Enter Birthday!')
+        else:
+            if not gender:
+                raise forms.ValidationError('Select Gender!')

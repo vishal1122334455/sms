@@ -83,7 +83,7 @@ class Parent(models.Model):
 #students registration
 class Student(models.Model):
     roll = models.CharField(max_length=255, null=True, blank=True)
-    birthday = models.DateTimeField(default=False, null=True, blank=True)
+    birthday = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=255, default='male', null=True, blank=True)
     school_bus = models.CharField(max_length=255, null=True, blank=True)
 
@@ -94,12 +94,9 @@ class Student(models.Model):
 class Librarian(models.Model):
     birthday = models.DateField(null=True, blank=True)
     gender = models.CharField(default='male', max_length=255, null=True, blank=True)
-    promotion_year = models.DateField(null=True, blank=True)
-    running_position = models.CharField(max_length=255, null=True, blank=True)
-    promotion_position = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return self.running_position
+        return self.gender
 
 
 #user profile manager
