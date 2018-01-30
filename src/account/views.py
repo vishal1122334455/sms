@@ -250,11 +250,7 @@ class AddStudent(AdminPermission, View):
             user = studentForm.save()
             student_id = user.id
 
-<<<<<<< HEAD
-            #get student object
-=======
             # get school object
->>>>>>> 53530c98efb8c4fe3f15b49ae754d61d0b9c3c3b
             student_obj = models.Student.objects.get(id=student_id)
 
             # update user profile for student field
