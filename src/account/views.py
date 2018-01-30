@@ -7,13 +7,14 @@ from . import forms
 from . import models
 from administration.views import AdminPermission
 
-#logout
+
+# logout
 def logout_request(request):
     logout(request)
     return redirect('account:login')
 
 
-#registration functionality
+# registration functionality
 class Registration(View):
     template_name = 'account/registration.html'
 
@@ -67,7 +68,7 @@ class Login(View):
         return render(request, self.template_name, variables)
 
 
-#registration for teacher
+# registration for teacher
 class RegistrationMember(AdminPermission, View):
     template_name = 'account/registration-member.html'
 
@@ -87,29 +88,29 @@ class RegistrationMember(AdminPermission, View):
             profile = regForm.registration()
             profile_id = profile.id
 
-            #get available member id from submitting form
+            # get available member id from submitting form
             member_type = request.POST.get("member_type")
 
-            #get available member obj for retrive name of the member type for compare
+            # get available member obj for retrive name of the member type for compare
             member_type_obj = models.AvailableUser.objects.filter(id=member_type)
 
             member_name = False
             for member in member_type_obj:
                 member_name = member.name
 
-            #for teacher
+            # for teacher
             if member_name == 'teacher':
                 return redirect('account:add-teacher', pk=profile_id)
-            #for parent
+            # for parent
             elif member_name == 'parent':
                 return redirect('account:add-parent', pk=profile_id)
-            #for school
+            # for school
             elif member_name == 'school':
                 return redirect('account:add-school', pk=profile_id)
-            #for student
+            # for student
             elif member_name == 'student':
                 return redirect('account:add-student', pk=profile_id)
-            #for librarian
+            # for librarian
             elif member_name == 'librarian':
                 return redirect('account:add-librarian', pk=profile_id)
 
@@ -120,7 +121,7 @@ class RegistrationMember(AdminPermission, View):
         return render(request, self.template_name, variables)
 
 
-#additional information to register teacher
+# additional information to register teacher
 class AddTeacher(AdminPermission, View):
     template_name = 'account/add-teacher.html'
 
@@ -141,10 +142,10 @@ class AddTeacher(AdminPermission, View):
             user = teacherForm.save()
             teacher_id = user.id
 
-            #get teacher object
+            # get teacher object
             teacher_obj = models.Teacher.objects.get(id=teacher_id)
 
-            #update user profile for teacher field
+            # update user profile for teacher field
             update_user_profile = models.UserProfile.objects.filter(id=pk).update(teacher=teacher_obj)
 
             return redirect('administration:add-member')
@@ -156,7 +157,7 @@ class AddTeacher(AdminPermission, View):
         return render(request, self.template_name, variables)
 
 
-#additional information to register teacher
+# additional information to register teacher
 class AddParent(AdminPermission, View):
     template_name = 'account/add-parent.html'
 
@@ -177,10 +178,10 @@ class AddParent(AdminPermission, View):
             user = parentForm.save()
             parent_id = user.id
 
-            #get parent object
+            # get parent object
             parent_obj = models.Parent.objects.get(id=parent_id)
 
-            #update user profile for teacher field
+            # update user profile for teacher field
             update_user_profile = models.UserProfile.objects.filter(id=pk).update(parent=parent_obj)
 
             return redirect('administration:add-member')
@@ -192,7 +193,7 @@ class AddParent(AdminPermission, View):
         return render(request, self.template_name, variables)
 
 
-#additional information to register teacher
+# additional information to register teacher
 class AddSchool(AdminPermission, View):
     template_name = 'account/add-school.html'
 
@@ -213,10 +214,10 @@ class AddSchool(AdminPermission, View):
             user = schoolForm.save()
             school_id = user.id
 
-            #get school object
+            # get school object
             school_obj = models.School.objects.get(id=school_id)
 
-            #update user profile for teacher field
+            # update user profile for teacher field
             update_user_profile = models.UserProfile.objects.filter(id=pk).update(is_school=True, school=school_obj)
 
             return redirect('administration:add-member')
@@ -228,7 +229,7 @@ class AddSchool(AdminPermission, View):
         return render(request, self.template_name, variables)
 
 
-#additional information to register student
+# additional information to register student
 class AddStudent(AdminPermission, View):
     template_name = 'account/add-student.html'
 
@@ -249,10 +250,10 @@ class AddStudent(AdminPermission, View):
             user = studentForm.save()
             student_id = user.id
 
-            #get school object
+            # get school object
             student_obj = models.Student.objects.get(id=student_id)
 
-            #update user profile for student field
+            # update user profile for student field
             update_user_profile = models.UserProfile.objects.filter(id=pk).update(student=student_obj)
 
             return redirect('administration:add-member')
@@ -264,7 +265,7 @@ class AddStudent(AdminPermission, View):
         return render(request, self.template_name, variables)
 
 
-#additional information to register librarian
+# additional information to register librarian
 class AddLibrarian(AdminPermission, View):
     template_name = 'account/add-librarian.html'
 
@@ -285,10 +286,10 @@ class AddLibrarian(AdminPermission, View):
             user = librarianForm.save()
             librarian_id = user.id
 
-            #get library object
+            # get library object
             librarian_obj = models.Librarian.objects.get(id=librarian_id)
 
-            #update user profile for student field
+            # update user profile for student field
             update_user_profile = models.UserProfile.objects.filter(id=pk).update(librarian=librarian_obj)
 
             return redirect('administration:add-member')

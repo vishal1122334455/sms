@@ -4,12 +4,12 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views import View
 
 
-#super user permission mixin class for accessing administration panel
+# super user permission mixin class for accessing administration panel
 class AdminPermission(PermissionRequiredMixin, View):
     permission_required = 'is_superuser'
 
 
-#administration Home
+# administration Home
 class Home(AdminPermission, View):
     template_name = 'administration/home.html'
 
@@ -20,7 +20,7 @@ class Home(AdminPermission, View):
         pass
 
 
-#add-member
+# add-member
 class AddMember(AdminPermission, View):
     template_name = 'administration/add-member.html'
 
