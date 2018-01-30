@@ -7,7 +7,7 @@ import re
 from django.utils.timezone import now
 
 
-#user registration form
+# user registration form
 class RegistrationForm(forms.Form):
     member_type = forms.ModelChoiceField(models.AvailableUser.objects.filter(name='office'), required=False, widget=forms.Select(attrs={'class':'input-field'}))
     school = forms.ModelChoiceField(models.School.objects.all(), required=False, widget=forms.Select(attrs={'class':'input-field'}))
@@ -74,7 +74,7 @@ class RegistrationForm(forms.Form):
         user = models.UserProfile.objects.create_user(username=username, email=email, name=name, phone=phone, address=address, school=school, photo=photo)
         user.set_password(password1)
 
-        #if official set account type 'admin' or 'superuser'
+        # if official set account type 'admin' or 'superuser'
         if account_type == 'admin' or account_type == 'superuser':
             user.is_staff = True
             user.is_superuser = True
@@ -89,7 +89,7 @@ class RegistrationForm(forms.Form):
         return user
 
 
-#login form
+# login form
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'validate', 'id': 'icon_prefix',}))
     password = forms.CharField(max_length=20, required=False, widget=forms.PasswordInput(attrs={'class': 'validate', 'id': 'password'}))
@@ -116,13 +116,13 @@ class LoginForm(forms.Form):
         return user
 
 
-#Member registration
+# Member registration
 class RegistrationMemberForm(RegistrationForm):
     member_type = forms.ModelChoiceField(models.AvailableUser.objects.all().exclude(pk=1), required=False, widget=forms.Select(attrs={'class':'input-field'}))
     school = forms.ModelChoiceField(models.School.objects.all(), required=False, widget=forms.Select(attrs={'class':'input-field'}))
 
 
-#add teacher form
+# add teacher form
 gender_list = (
         ('male', 'Male'),
         ('female', 'Female'),)
@@ -147,14 +147,14 @@ class TeacherForm(forms.ModelForm):
                 raise forms.ValidationError("Select Gender!")
 
 
-#add parent form
+# add parent form
 class ParentForm(forms.ModelForm):
     class Meta:
         model = models.Parent
         fields = '__all__'
 
 
-#add school form
+# add school form
 class SchoolForm(forms.ModelForm):
     address = forms.CharField( required=False, max_length= 1000 ,widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}) )
 
@@ -181,7 +181,7 @@ class SchoolForm(forms.ModelForm):
                 if not phone:
                     raise forms.ValidationError('Enter Phone number!')
 
-#add student form
+# add student form
 class StudentForm(forms.ModelForm):
     birthday = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate datepicker'}))
     gender = forms.ChoiceField(choices=gender_list, required=False, widget=forms.Select(attrs={'class': 'validate'}))
@@ -209,7 +209,7 @@ class StudentForm(forms.ModelForm):
                         raise forms.ValidationError('Enter School Bus!')
 
 
-#add librarian form
+# add librarian form
 class LibrarianForm(forms.ModelForm):
     birthday = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate datepicker'}))
     gender = forms.ChoiceField(choices=gender_list, required=False, widget=forms.Select(attrs={'class': 'validate'}))

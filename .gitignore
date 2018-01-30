@@ -1,8 +1,11 @@
 #for virtualenv
+bin
+include
 Include
 Scripts
 pip-selfcheck.json
 tcl
+
 # Compiled source #
 ###################
 *.com
