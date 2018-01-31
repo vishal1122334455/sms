@@ -35,15 +35,33 @@
                     <form method="post" style="margin-top: 40px;" enctype="multipart/form-data">
                         {% csrf_token %}
 
-                        <div class="input-field col s12 m6 l6">
-                            {{ regForm.member_type }}
-                            <label>Select Member Type</label>
-                        </div>
+                        {% if not current_user_school %}
+                            <div class="input-field col s12 m6 l6">
+                                {{ regForm.member_type }}
+                                <label>Select Member Type</label>
+                            </div>
+                        {% else %}
+                            <div class="input-field col s12 m6 l6">
+                                <select name="member_type" class="input-field initialized" id="id_member_type">
+                                    <option value="1">Office</option>
+                                </select>
+                                <label>Select Member Type</label>
+                            </div>
+                        {% endif %}
 
-                        <div class="input-field col s12 m6 l6">
-                            {{ regForm.school }}
-                            <label>Select School</label>
-                        </div>
+                        {% if not current_user_school %}
+                            <div class="input-field col s12 m6 l6">
+                                {{ regForm.school }}
+                                <label>Select School</label>
+                            </div>
+                        {% else %}
+                            <div class="input-field col s12 m6 l6">
+                                <select name="school" class="input-field initialized" id="id_school">
+                                    <option value="{{ current_user_school.id }}">{{ current_user_school.name | title }}</option>
+                                </select>
+                                <label>Select School</label>
+                            </div>
+                        {% endif %}
 
                         <div class="input-field col s12 m6 l6">
                             <i class="material-icons prefix">account_circle</i>

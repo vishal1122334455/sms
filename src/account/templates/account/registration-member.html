@@ -41,7 +41,9 @@
                         </div>
 
                         <div class="input-field col s12 m6 l6">
-                            {{ regForm.school }}
+                            <select name="school" class="input-field initialized" id="id_school">
+                                <option value="{{ get_school.id }}">{{ get_school.name | title }}</option>
+                            </select>
                             <label>Select School</label>
                         </div>
 
