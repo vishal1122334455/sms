@@ -147,7 +147,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     #account type is the post of the official
     account_type = models.CharField(max_length=255, default='admin', blank=True, null=True)
 
-    photo = models.ImageField(upload_to='profile/picture/', null=True, blank=True)
+    photo = models.ImageField(upload_to='profile/picture/', default='no-img.jpg')
 
     #for account type school and other's common fields
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
@@ -191,4 +191,4 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """Django uses this when it needs to convert the object to a string"""
 
-        return self.username
+        return self.username + "-" + str(self.member_type)
