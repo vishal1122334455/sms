@@ -31,6 +31,12 @@ class Home(AdminPermission, View):
         pass
 
 
+#==========================================
+#==========================================
+#======start member orperation view========
+#==========================================
+#==========================================
+
 #office registration for other official and student, teacher, parent, librarian
 class Registration(AdminPermission, View):
     template_name = 'office/registration.html'
@@ -305,3 +311,35 @@ class SectionWiseStudent(AdminPermission, View):
 
     def post(self, request):
         pass
+
+#==========================================
+#==========================================
+#=======end member orperation view=========
+#==========================================
+#==========================================
+
+
+
+#==========================================
+#==========================================
+#=====start schedule orperation view=======
+#==========================================
+#==========================================
+
+
+#office schedule
+class Schedule(AdminPermission, View):
+    template_name = 'office/schedule.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#==========================================
+#==========================================
+#======end schedule orperation view========
+#==========================================
+#==========================================
