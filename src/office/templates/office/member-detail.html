@@ -79,10 +79,12 @@
             </div>
 
             {% if viewable_user %}
-            <div class="card-action">
-                <a href="{% url 'office:office-registration' %}">Click To See Operations</a>
-                <a href="{% url 'office:office-registration' %}">Click To See Operations</a>
-            </div>
+                {% for member in viewable_user %}
+                    <div class="card-action">
+                        <a href="{% url 'office:member-edit' pk=member.id %}">Edit This Member</a>
+                        <a href="{% url 'office:member-delete' pk=member.id %}">Delete This Member</a>
+                    </div>
+                {% endfor %}
             {% endif %}
         </div>
     </div>

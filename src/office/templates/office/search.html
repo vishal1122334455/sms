@@ -51,8 +51,8 @@
 
                     <div class="card-action">
                         <a href="{% url 'office:member-detail' pk=member.id %}">View Detail</a>
-                        <a href="{% url 'office:office-registration' %}">Edit Member</a>
-                        <a href="{% url 'office:office-registration' %}">Remove Member</a>
+                        <a href="{% url 'office:member-edit' pk=member.id %}">Edit Member</a>
+                        <a href="{% url 'office:member-delete' pk=member.id %}">Remove Member</a>
                     </div>
                 </div>
             </div>

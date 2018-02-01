@@ -51,11 +51,14 @@ class MemberEditForm(forms.ModelForm):
         super(MemberEditForm, self).__init__(*args,**kwargs)
         self.fields['classes'].queryset = models.Class.objects.filter(school=self.request.user.school)
         self.fields['section'].queryset = models.Section.objects.filter(school=self.request.user.school)
+        self.fields['school'].queryset = models.School.objects.filter(id=self.request.user.school.id)
 
-    classes = forms.ModelChoiceField(queryset=models.Class.objects.all(), widget=forms.Select(attrs={'class':'input-field browser-default'}))
-    section = forms.ModelChoiceField(queryset=models.Section.objects.all(), widget=forms.Select(attrs={'class':'input-field browser-default'}))
+    address = forms.CharField( required=False, max_length= 1000 ,widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}) )
+    classes = forms.ModelChoiceField(queryset=models.Class.objects.all(), required=False, widget=forms.Select(attrs={'class':'input-field browser-default'}))
+    section = forms.ModelChoiceField(queryset=models.Section.objects.all(), required=False,widget=forms.Select(attrs={'class':'input-field browser-default'}))
+    school = forms.ModelChoiceField(queryset=models.School.objects.all(), required=False,widget=forms.Select(attrs={'class':'input-field browser-default'}))
 
     class Meta:
         model = models.UserProfile
-        fields = ('username', 'name', 'email', 'phone', 'address', 'photo', 'classes', 'section')
+        fields = ('username', 'name', 'email', 'phone', 'address', 'photo', 'school', 'classes', 'section')
 
