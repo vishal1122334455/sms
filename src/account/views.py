@@ -16,25 +16,59 @@ def logout_request(request):
 
 # registration functionality
 class Registration(View):
+    """
+       How office registration works:
+       ------------------------------
+
+       ###if admin user has no school in their user_profile then we consider he has the ability
+          to add school and other official.
+
+       ###if admin user has school in their user_profile then we consider he has a school and then
+          he can only add official for his school by these view.
+
+    """
     template_name = 'account/registration.html'
 
     def get(self, request):
+        #this variable is to compare user is he has school or not in the template
+        current_user_school = request.user.school
+
         regForm = forms.RegistrationForm()
 
         variables = {
             'regForm': regForm,
+            'current_user_school': current_user_school,
         }
 
         return render(request, self.template_name, variables)
 
     def post(self, request):
+        #this variable is to compare user is he has school or not in the template
+        current_user_school = request.user.school
+
         regForm = forms.RegistrationForm(request.POST or None, request.FILES)
 
         if regForm.is_valid():
-            regForm.registration()
+            profile = regForm.registration()
+            profile_id = profile.id
+
+            #get available member id from submitting form
+            member_type = request.POST.get("member_type")
+
+            #get available member obj for retrive name of the member type for compare
+            member_type_obj = models.AvailableUser.objects.filter(id=member_type)
+
+            member_name = False
+            for member in member_type_obj:
+                member_name = member.name
+
+            #for school
+            if member_name == 'school':
+                return redirect('account:add-school', pk=profile_id)
 
         variables = {
             'regForm': regForm,
+            'current_user_school': current_user_school,
         }
 
         return render(request, self.template_name, variables)
@@ -75,13 +109,18 @@ class RegistrationMember(AdminPermission, View):
     def get(self, request):
         regForm = forms.RegistrationMemberForm()
 
+        get_school = request.user.school
+
         variables = {
             'regForm': regForm,
+            'get_school': get_school,
         }
 
         return render(request, self.template_name, variables)
 
     def post(self, request):
+        get_school = request.user.school
+
         regForm = forms.RegistrationMemberForm(request.POST or None, request.FILES)
 
         if regForm.is_valid():
@@ -116,6 +155,7 @@ class RegistrationMember(AdminPermission, View):
 
         variables = {
             'regForm': regForm,
+            'get_school': get_school,
         }
 
         return render(request, self.template_name, variables)

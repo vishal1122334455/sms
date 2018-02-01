@@ -1,6 +1,7 @@
 from django import forms
 from . import models
 from django.contrib.auth import authenticate
+from django.db.models import Q
 
 
 import re
@@ -9,7 +10,7 @@ from django.utils.timezone import now
 
 # user registration form
 class RegistrationForm(forms.Form):
-    member_type = forms.ModelChoiceField(models.AvailableUser.objects.filter(name='office'), required=False, widget=forms.Select(attrs={'class':'input-field'}))
+    member_type = forms.ModelChoiceField(models.AvailableUser.objects.filter(Q(name='office') | Q(name='school')), required=False, widget=forms.Select(attrs={'class':'input-field'}))
     school = forms.ModelChoiceField(models.School.objects.all(), required=False, widget=forms.Select(attrs={'class':'input-field'}))
     username = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
     name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
@@ -118,9 +119,7 @@ class LoginForm(forms.Form):
 
 # Member registration
 class RegistrationMemberForm(RegistrationForm):
-    member_type = forms.ModelChoiceField(models.AvailableUser.objects.all().exclude(pk=1), required=False, widget=forms.Select(attrs={'class':'input-field'}))
-    school = forms.ModelChoiceField(models.School.objects.all(), required=False, widget=forms.Select(attrs={'class':'input-field'}))
-
+    member_type = forms.ModelChoiceField(models.AvailableUser.objects.all().exclude(Q(pk=1) | Q(pk=4)), required=False, widget=forms.Select(attrs={'class':'input-field'}))
 
 # add teacher form
 gender_list = (
