@@ -338,6 +338,46 @@ class Schedule(AdminPermission, View):
         pass
 
 
+#office schedule:::class list
+class ClassList(AdminPermission, View):
+    template_name = 'office/class-list.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(Q(school__name=request.user.school.name)).all()
+        count = models.Class.objects.filter(Q(school__name=request.user.school.name)).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office schedule:::section list
+class SectionList(AdminPermission, View):
+    template_name = 'office/section-list.html'
+
+    def get(self, request, classes):
+
+        sections = models.Section.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes)).all()
+        count = models.Section.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes)).count()
+
+        variables = {
+            'sections': sections,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
 #==========================================
 #==========================================
 #======end schedule orperation view========

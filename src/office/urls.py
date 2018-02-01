@@ -21,7 +21,7 @@ urlpatterns = [
 
     #list of section in class
     url(r'^member/list/student/class/(?P<classes>[a-zA-Z0-9]+)/section/$', views.ClassWiseSection.as_view(), name='section'),
-    url(r'^member/list/student/class/(?P<classes>[a-zA-Z0-9]+)/section/(?P<section>[a-zA-Z0-9]+)/$', views.SectionWiseStudent.as_view(), name='section-wise-student'),
+    url(r'^member/list/student/class/(?P<classes>[a-zA-Z0-9]+)/section/(?P<section>[a-zA-Z0-9-_]+)/$', views.SectionWiseStudent.as_view(), name='section-wise-student'),
 
 
     url(r'^member/detail/(?P<pk>[0-9]+)/$', views.MemberDetail.as_view(), name='member-detail'),
@@ -36,6 +36,8 @@ urlpatterns = [
 
 
     url(r'^schedule/$', views.Schedule.as_view(), name='schedule'),
+    url(r'^schedule/class-list/$', views.ClassList.as_view(), name='class-list'),
+    url(r'^schedule/class-list/(?P<classes>[a-zA-Z0-9]+)/$', views.SectionList.as_view(), name='section-list'),
 
 
     #::::start schedule module url::::
