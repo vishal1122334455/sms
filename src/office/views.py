@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from django.contrib.auth.hashers import make_password
+from django.db.models import Q
 
 from administration.views import AdminPermission
 
@@ -193,3 +193,115 @@ class MemberDelete(AdminPermission, View):
         }
 
         return render(request, self.template_name, variables)
+
+
+#office member list
+class MemberList(AdminPermission, View):
+    template_name = 'office/member-list.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#office member list detail
+class MemberListDetail(AdminPermission, View):
+    template_name = 'office/member-list-detail.html'
+
+    def get(self, request, type):
+        member_type = type
+
+        queries = models.UserProfile.objects.filter(Q(school__id=request.user.school.id) & Q(member_type__name=type)).all()
+        count = models.UserProfile.objects.filter(Q(school__id=request.user.school.id) & Q(member_type__name=type)).count()
+
+        variables = {
+            'queries': queries,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office class detail
+class StudentClass(AdminPermission, View):
+    template_name = 'office/student-class-list.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(Q(school__name=request.user.school.name)).all()
+        count = models.Class.objects.filter(Q(school__name=request.user.school.name)).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office :: student list in class
+class StudenListInClass(AdminPermission, View):
+    template_name = 'office/student-list-in-class.html'
+
+    def get(self, request, classes):
+
+        students = models.UserProfile.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes) & Q(member_type__name='student')).all()
+        count = models.UserProfile.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes) & Q(member_type__name='student')).count()
+
+        variables = {
+            'students': students,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office :: class wise section
+class ClassWiseSection(AdminPermission, View):
+    template_name = 'office/class-wise-section.html'
+
+    def get(self, request, classes):
+
+        sections = models.Section.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes)).all()
+        count = models.Section.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes)).count()
+
+        variables = {
+            'sections': sections,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office :: section wise student
+class SectionWiseStudent(AdminPermission, View):
+    template_name = 'office/section-wise-student.html'
+
+    def get(self, request, classes, section):
+
+        students = models.UserProfile.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes) & Q(section__name=section) & Q(member_type__name='student')).all()
+        count = models.UserProfile.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes) & Q(section__name=section) & Q(member_type__name='student')).count()
+
+        variables = {
+            'students': students,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
