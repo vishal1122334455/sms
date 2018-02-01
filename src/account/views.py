@@ -143,14 +143,10 @@ class RegistrationMember(AdminPermission, View):
             # for parent
             elif member_name == 'parent':
                 return redirect('account:add-parent', pk=profile_id)
-<<<<<<< HEAD
             # for school
             elif member_name == 'school':
                 return redirect('account:add-school', pk=profile_id)
             # for student
-=======
-            #for student
->>>>>>> mubarak
             elif member_name == 'student':
                 return redirect('account:add-student', pk=profile_id)
             # for librarian
