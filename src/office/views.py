@@ -530,10 +530,9 @@ class RoutineDelete(AdminPermission, View):
                 routine_obj = office_model.ClassRoutine.objects.get(id=routine_id)
                 routine_obj.delete()
 
-                return redirect('office:member-search')
+                return redirect('office:routine-view', classes=routine_class, section=routine_section)
 
             elif request.POST.get('no') == 'no':
-                routine_id = request.POST.get('routine_id')
                 return redirect('office:routine-view', classes=routine_class, section=routine_section)
 
         variables = {
