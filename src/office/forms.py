@@ -4,6 +4,7 @@ from django.db.models import Q
 import re
 
 from account import models
+from .models import ClassRoutine
 
 
 #search form
@@ -62,3 +63,78 @@ class MemberEditForm(forms.ModelForm):
         model = models.UserProfile
         fields = ('username', 'name', 'email', 'phone', 'address', 'photo', 'school', 'classes', 'section')
 
+
+
+
+#create routine form
+day_list = (
+        ('sunday', 'Sunday'),
+        ('monday', 'Monday'),
+        ('tuesday', 'Tuesday'),
+        ('wednesday', 'Wednesday'),
+        ('thursday', 'Thursday'),
+        ('saturday', 'Saturday'),)
+
+class CreateRoutineForm(forms.Form):
+    def __init__(self,*args,**kwargs):
+        self.request = kwargs.pop('request')
+        self.classes = kwargs.pop('classes')
+        super(CreateRoutineForm, self).__init__(*args,**kwargs)
+
+        self.fields['subject'].queryset = models.Subject.objects.filter(Q(school=self.request.user.school) & Q(classes=self.classes))
+
+
+    subject = forms.ModelChoiceField(queryset=models.Subject.objects.all(), required=False,widget=forms.Select(attrs={'class':'input-field browser-default'}))
+    day = forms.ChoiceField(choices=day_list, required=False, widget=forms.Select(attrs={'class': 'validate browser-default'}))
+    period = forms.IntegerField(required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    start_hour = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate timepicker'}))
+    end_hour = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate timepicker'}))
+
+    def clean(self):
+        subject = self.cleaned_data.get('subject')
+        day = self.cleaned_data.get('day')
+        period = self.cleaned_data.get('period')
+        start_hour = self.cleaned_data.get('start_hour')
+        end_hour = self.cleaned_data.get('end_hour')
+
+        if subject == None:
+            raise forms.ValidationError("Select Subject!")
+        else:
+            if len(start_hour) < 1:
+                raise forms.ValidationError('Select Class Start Hour!')
+            else:
+                if len(end_hour) < 1:
+                    raise forms.ValidationError("Select Class End Hour!")
+
+
+    def deploy(self, section):
+        subject = self.cleaned_data.get('subject')
+        day = self.cleaned_data.get('day')
+        period = self.cleaned_data.get('period')
+        start_hour = self.cleaned_data.get('start_hour')
+        end_hour = self.cleaned_data.get('end_hour')
+
+        section_obj = models.Section.objects.get(Q(school=self.request.user.school) & Q(classes=self.classes) & Q(name=section))
+
+        deploy = ClassRoutine(school=self.request.user.school, classes=self.classes, section=section_obj, subject=subject, day=day, period=period, start_hour=start_hour, end_hour=end_hour)
+        deploy.save()
+
+
+#routine edit form
+class RoutineEditForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        self.request = kwargs.pop('request')
+        self.classes = kwargs.pop('classes')
+        super(RoutineEditForm, self).__init__(*args,**kwargs)
+
+        self.fields['subject'].queryset = models.Subject.objects.filter(Q(school=self.request.user.school) & Q(classes=self.classes))
+
+    subject = forms.ModelChoiceField(queryset=models.Subject.objects.all(), required=False,widget=forms.Select(attrs={'class':'input-field browser-default'}))
+    day = forms.ChoiceField(choices=day_list, required=False, widget=forms.Select(attrs={'class': 'validate browser-default'}))
+    period = forms.IntegerField(required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    start_hour = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate timepicker'}))
+    end_hour = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate timepicker'}))
+
+    class Meta:
+        model = ClassRoutine
+        fields = ('subject', 'day', 'period', 'start_hour', 'end_hour',)
