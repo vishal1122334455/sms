@@ -73,4 +73,18 @@ urlpatterns = [
     #::::::end notice module url::::::
     #:::::::::::::::::::::::::::::::::
 
+    #:::::start gallary module url::::
+    #:::::::::::::::::::::::::::::::::
+
+
+
+    url(r'^gallary/$', views.Gallary.as_view(), name='gallary'),
+    url(r'^gallary/image/$', views.GallaryImage.as_view(), name='gallary-image'),
+    url(r'^gallary/image/create/$', views.GallaryImageCreate.as_view(), name='gallary-image-create'),
+    url(r'^gallary/image/view/$', views.GallaryImageView.as_view(), name='gallary-image-view'),
+    url(r'^gallary/image/delete/(?P<pk>[0-9]+)/$', views.GallaryImageDelete.as_view(), name='gallary-image-delete'),
+
+
+    #::::::end gallary module url::::::
+    #:::::::::::::::::::::::::::::::::
 ]

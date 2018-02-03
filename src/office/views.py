@@ -926,3 +926,129 @@ class NoticeSearch(AdminPermission, View):
 #=======end notice orperation view=========
 #==========================================
 #==========================================
+
+
+#==========================================
+#==========================================
+#=====start gallary orperation view========
+#==========================================
+#==========================================
+
+#gallary
+class Gallary(AdminPermission, View):
+    template_name = 'office/gallary.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#gallary-image
+class GallaryImage(AdminPermission, View):
+    template_name = 'office/gallary-image.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#gallary-image-create
+class GallaryImageCreate(AdminPermission, View):
+    template_name = 'office/gallary-image-create.html'
+
+    def get(self, request):
+        gallary_image_form = forms.GallaryImageForm()
+
+        variables = {
+            'gallary_image_form': gallary_image_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        gallary_image_form = forms.GallaryImageForm(request.POST or None, request.FILES)
+
+        if gallary_image_form.is_valid():
+            gallary_image_form.deploy(request)
+
+        variables = {
+            'gallary_image_form': gallary_image_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#gallary-image view
+class GallaryImageView(AdminPermission, View):
+    template_name = 'office/gallary-image-view.html'
+
+    def get(self, request):
+
+        images = office_model.GallaryImage.objects.filter(school=request.user.school).order_by('-id')
+
+        variables = {
+            'images': images,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#image delete
+class GallaryImageDelete(AdminPermission, View):
+    template_name = 'office/gallary-image-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.GallaryImage, pk=pk)
+
+        images = office_model.GallaryImage.objects.filter(Q(school__name=request.user.school.name) & Q(pk=pk) & Q(user=request.user))
+
+        viewable_image = False
+        if images:
+            viewable_image = images
+
+        variables = {
+            'viewable_image': viewable_image,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.GallaryImage, pk=pk)
+
+        images = office_model.GallaryImage.objects.filter(Q(school__name=request.user.school.name) & Q(pk=pk) & Q(user=request.user))
+
+        viewable_image = False
+        if images:
+            viewable_image = images
+
+            if request.POST.get('yes') == 'yes':
+                image_id = request.POST.get('image_id')
+
+                image_obj = office_model.GallaryImage.objects.get(id=image_id)
+                image_obj.delete()
+
+                return redirect('office:gallary-image-view')
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:gallary-image-view')
+
+        variables = {
+            'viewable_image': viewable_image,
+        }
+
+        return render(request, self.template_name, variables)
+
+#==========================================
+#==========================================
+#=======end gallary orperation view========
+#==========================================
+#==========================================

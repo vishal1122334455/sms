@@ -4,7 +4,7 @@ from django.db.models import Q
 import re
 
 from account import models
-from .models import ClassRoutine, ExamRoutine, Notice
+from .models import ClassRoutine, ExamRoutine, Notice, GallaryImage
 
 
 #search form
@@ -282,3 +282,29 @@ class NoticeSearchForm(forms.Form):
         query = Notice.objects.filter(Q(id=search_text) & Q(school=request.user.school)).all()
 
         return query, count
+
+
+#gallary image upload form
+class GallaryImageForm(forms.Form):
+    description = forms.CharField(required=False, max_length=1000, widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}))
+    image = forms.ImageField(required=False)
+
+
+    def clean(self):
+        description = self.cleaned_data.get('description')
+        image = self.cleaned_data.get('image')
+
+        if len(description) == 0:
+            raise forms.ValidationError('Write Description for this photo!')
+        else:
+            if image == None:
+                raise forms.ValidationError('Choose Image!')
+
+
+    def deploy(self, request):
+        description = self.cleaned_data.get('description')
+        image = self.cleaned_data.get('image')
+
+        deploy = GallaryImage(school=request.user.school, user=request.user, description=description, image=image)
+
+        deploy.save()

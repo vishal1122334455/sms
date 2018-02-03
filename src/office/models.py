@@ -32,6 +32,7 @@ class ExamRoutine(models.Model):
         return str(self.school) + "-" + str(self.classes.name) + "-" + str(self.date)
 
 
+#office notice model
 class Notice(models.Model):
     school = models.ForeignKey(mod.School, on_delete=models.CASCADE)
     classes = models.ForeignKey(mod.Class, on_delete=models.CASCADE)
@@ -43,3 +44,21 @@ class Notice(models.Model):
 
     def __str__(self):
         return str(self.school.name) + "-" + str(self.classes.name) + "-" + str(self.user.username)
+
+
+#gallary image upload model
+class GallaryImage(models.Model):
+    school = models.ForeignKey(mod.School, on_delete=models.CASCADE)
+    user = models.ForeignKey(mod.UserProfile, on_delete=models.CASCADE)
+
+    description = models.TextField(max_length=1000, null=True, blank=True)
+    image = models.ImageField(upload_to='school/gallary/', null=True, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.school.name) + "-" + str(self.user.username)
+
+    def delete(self, *args, **kwargs):
+        storage, path = self.image.storage, self.image.path
+        super(GallaryImage, self).delete(*args, **kwargs)
+        storage.delete(path)
