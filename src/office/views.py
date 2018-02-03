@@ -6,6 +6,7 @@ from administration.views import AdminPermission
 
 from . import forms
 from account import models
+from . import models as office_model
 
 
 def check_user(request, pk):
@@ -30,6 +31,12 @@ class Home(AdminPermission, View):
     def post(self, request):
         pass
 
+
+#==========================================
+#==========================================
+#======start member orperation view========
+#==========================================
+#==========================================
 
 #office registration for other official and student, teacher, parent, librarian
 class Registration(AdminPermission, View):
@@ -305,3 +312,237 @@ class SectionWiseStudent(AdminPermission, View):
 
     def post(self, request):
         pass
+
+#==========================================
+#==========================================
+#=======end member orperation view=========
+#==========================================
+#==========================================
+
+
+
+#==========================================
+#==========================================
+#=====start schedule orperation view=======
+#==========================================
+#==========================================
+
+
+#office schedule
+class Schedule(AdminPermission, View):
+    template_name = 'office/schedule.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#office schedule:::class list
+class ClassList(AdminPermission, View):
+    template_name = 'office/class-list.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(Q(school__name=request.user.school.name)).all()
+        count = models.Class.objects.filter(Q(school__name=request.user.school.name)).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office schedule:::section list
+class SectionList(AdminPermission, View):
+    template_name = 'office/section-list.html'
+
+    def get(self, request, classes):
+
+        sections = models.Section.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes)).all()
+        count = models.Section.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes)).count()
+
+        variables = {
+            'sections': sections,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office schedule::::routine create
+class RoutineCreate(AdminPermission, View):
+    template_name = 'office/routine-create.html'
+
+    def get(self, request, classes, section):
+
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+
+        class_routine_form = forms.CreateRoutineForm(request=request, classes=classes_obj)
+
+        variables = {
+            'class_routine_form': class_routine_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, classes, section):
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+
+        class_routine_form = forms.CreateRoutineForm(request.POST or None, request=request, classes=classes_obj)
+
+        if class_routine_form.is_valid():
+            class_routine_form.deploy(section)
+
+        variables = {
+            'class_routine_form': class_routine_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+#routine view
+class RoutineView(AdminPermission, View):
+    template_name = 'office/routine-view.html'
+
+    def get(self, request, classes, section):
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+        section_obj = models.Section.objects.get(Q(school=request.user.school) & Q(classes=classes_obj) & Q(name=section))
+
+        routines = office_model.ClassRoutine.objects.filter(Q(school=request.user.school) & Q(classes=classes_obj) & Q(section=section_obj)).all()
+
+        variables = {
+            'routines': routines,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+#routine edit
+class RoutineEdit(AdminPermission, View):
+    template_name = 'office/routine-edit.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.ClassRoutine, pk=pk)
+
+
+
+        routine_obj = office_model.ClassRoutine.objects.filter(pk=pk)
+        routine_objs = office_model.ClassRoutine.objects.get(pk=pk)
+
+        classes_obj = False
+        routine_school = False
+        for routines in routine_obj:
+            classes_obj = routines.classes
+            routine_school = routines.school.name
+
+        routine_edit_form = False
+        if routine_school == request.user.school.name:
+            routine_edit_form = forms.RoutineEditForm(instance=routine_objs, request=request, classes=classes_obj)
+
+        variables = {
+            'routine_edit_form': routine_edit_form,
+            'routine_obj': routine_obj,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.ClassRoutine, pk=pk)
+
+        routine_obj = office_model.ClassRoutine.objects.filter(pk=pk)
+        routine_objs = office_model.ClassRoutine.objects.get(pk=pk)
+
+        classes_obj = False
+        routine_school = False
+        for routines in routine_obj:
+            classes_obj = routines.classes
+            routine_school = routines.school.name
+
+        routine_edit_form = forms.RoutineEditForm(request.POST or None, instance=routine_objs, request=request, classes=classes_obj)
+
+        if routine_school == request.user.school.name:
+            if routine_edit_form.is_valid():
+                routine_edit_form.save()
+
+        variables = {
+            'routine_edit_form': routine_edit_form,
+            'routine_obj': routine_obj,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+#routine delete
+class RoutineDelete(AdminPermission, View):
+    template_name = 'office/routine-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.ClassRoutine, pk=pk)
+
+        routine_obj = office_model.ClassRoutine.objects.filter(pk=pk)
+
+        routine_school = False
+        for routines in routine_obj:
+            routine_school = routines.school.name
+
+        viewable_routine = False
+        if routine_school == request.user.school.name:
+            viewable_routine = routine_obj
+
+        variables = {
+            'viewable_routine': viewable_routine,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(models.UserProfile, pk=pk)
+
+        routine_obj = office_model.ClassRoutine.objects.filter(pk=pk)
+
+        routine_school = False
+        routine_class = False
+        routine_section = False
+        for routines in routine_obj:
+            routine_school = routines.school.name
+            routine_class = routines.classes.name
+            routine_section = routines.section.name
+
+        viewable_routine = False
+        if routine_school == request.user.school.name:
+            viewable_routine = routine_obj
+
+            if request.POST.get('yes') == 'yes':
+                routine_id = request.POST.get('routine_id')
+
+                routine_obj = office_model.ClassRoutine.objects.get(id=routine_id)
+                routine_obj.delete()
+
+                return redirect('office:routine-view', classes=routine_class, section=routine_section)
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:routine-view', classes=routine_class, section=routine_section)
+
+        variables = {
+            'viewable_routine': viewable_routine,
+        }
+
+        return render(request, self.template_name, variables)
+
+#==========================================
+#==========================================
+#======end schedule orperation view========
+#==========================================
+#==========================================

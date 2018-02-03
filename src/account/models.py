@@ -61,6 +61,16 @@ class Section(models.Model):
     def __str__(self):
         return str(self.school.name) + " - " + str(self.classes.name_with_int) + " : " + str(self.name)
 
+#subjects
+class Subject(models.Model):
+    """Add class subjects"""
+
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    classes = models.ForeignKey(Class, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.school) + "-" + str(self.classes) + ":" + self.name
 
 # teacher registration
 class Teacher(models.Model):
@@ -147,7 +157,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     # account type is the post of the official
     account_type = models.CharField(max_length=255, default='admin', blank=True, null=True)
 
-    photo = models.ImageField(upload_to='profile/picture/', default='no-img.jpg')
+    photo = models.ImageField(upload_to='profile/picture/', default='no-img.jpg', null=True, blank=True)
 
     # for account type school and other's common fields
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
@@ -192,3 +202,5 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         """Django uses this when it needs to convert the object to a string"""
 
         return self.username + "-" + str(self.member_type)
+
+
