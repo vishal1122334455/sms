@@ -541,6 +541,167 @@ class RoutineDelete(AdminPermission, View):
 
         return render(request, self.template_name, variables)
 
+
+#create exam routine
+class ExamRoutineCreate(AdminPermission, View):
+    template_name = 'office/exam-routine-create.html'
+
+    def get(self, request, classes):
+
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+
+        exam_routine_form = forms.CreateExamRoutineForm(request=request, classes=classes_obj)
+
+        variables = {
+            'exam_routine_form': exam_routine_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, classes):
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+
+        exam_routine_form = forms.CreateExamRoutineForm(request.POST or None, request=request, classes=classes_obj)
+
+        if exam_routine_form.is_valid():
+            exam_routine_form.deploy()
+
+        variables = {
+            'exam_routine_form': exam_routine_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#exam routine view
+class ExamRoutineView(AdminPermission, View):
+    template_name = 'office/exam-routine-view.html'
+
+    def get(self, request, classes):
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+
+        routines = office_model.ExamRoutine.objects.filter(Q(school=request.user.school) & Q(classes=classes_obj)).all()
+
+        variables = {
+            'routines': routines,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#exam routine edit
+class ExamRoutineEdit(AdminPermission, View):
+    template_name = 'office/exam-routine-edit.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.ExamRoutine, pk=pk)
+
+        routine_obj = office_model.ExamRoutine.objects.filter(pk=pk)
+        routine_objs = office_model.ExamRoutine.objects.get(pk=pk)
+
+        classes_obj = False
+        routine_school = False
+        for routines in routine_obj:
+            classes_obj = routines.classes
+            routine_school = routines.school.name
+
+        exam_routine_edit_form = False
+        if routine_school == request.user.school.name:
+            exam_routine_edit_form = forms.ExamRoutineEditForm(instance=routine_objs, request=request, classes=classes_obj)
+
+        variables = {
+            'exam_routine_edit_form': exam_routine_edit_form,
+            'routine_obj': routine_obj,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.ExamRoutine, pk=pk)
+
+        routine_obj = office_model.ExamRoutine.objects.filter(pk=pk)
+        routine_objs = office_model.ExamRoutine.objects.get(pk=pk)
+
+        classes_obj = False
+        routine_school = False
+        for routines in routine_obj:
+            classes_obj = routines.classes
+            routine_school = routines.school.name
+
+        exam_routine_edit_form = forms.ExamRoutineEditForm(request.POST or None, instance=routine_objs, request=request, classes=classes_obj)
+
+        if routine_school == request.user.school.name:
+            if exam_routine_edit_form.is_valid():
+                exam_routine_edit_form.save()
+
+        variables = {
+            'exam_routine_edit_form': exam_routine_edit_form,
+            'routine_obj': routine_obj,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#exam routine delete
+class ExamRoutineDelete(AdminPermission, View):
+    template_name = 'office/exam-routine-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.ExamRoutine, pk=pk)
+
+        routine_obj = office_model.ExamRoutine.objects.filter(pk=pk)
+
+        routine_school = False
+        for routines in routine_obj:
+            routine_school = routines.school.name
+
+        viewable_routine = False
+        if routine_school == request.user.school.name:
+            viewable_routine = routine_obj
+
+        variables = {
+            'viewable_routine': viewable_routine,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.ExamRoutine, pk=pk)
+
+        routine_obj = office_model.ExamRoutine.objects.filter(pk=pk)
+
+        routine_school = False
+        routine_class = False
+        for routines in routine_obj:
+            routine_school = routines.school.name
+            routine_class = routines.classes.name
+
+        viewable_routine = False
+        if routine_school == request.user.school.name:
+            viewable_routine = routine_obj
+
+            if request.POST.get('yes') == 'yes':
+                routine_id = request.POST.get('routine_id')
+
+                routine_obj = office_model.ExamRoutine.objects.get(id=routine_id)
+                routine_obj.delete()
+
+                return redirect('office:exam-routine-view', classes=routine_class)
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:exam-routine-view', classes=routine_class)
+
+        variables = {
+            'viewable_routine': viewable_routine,
+        }
+
+        return render(request, self.template_name, variables)
+
 #==========================================
 #==========================================
 #======end schedule orperation view========

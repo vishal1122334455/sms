@@ -25,7 +25,16 @@
                     </div>
 
                     <div class="card-action">
-                        <a href="{% url 'office:section-list' classes=class.name %}">View Section</a>
+                        <div class="row">
+                            <div class="col s12 m12 l12">
+                                <a href="{% url 'office:section-list' classes=class.name %}">View Section</a>
+                            </div>
+
+                            <div class="col s12 m12 l12" style="margin-top: 30px;">
+                                <a href="{% url 'office:exam-routine-view' classes=class.name %}">View Exam Routine</a>
+                                <a href="{% url 'office:exam-routine-create' classes=class.name %}">Create Exam Routine</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

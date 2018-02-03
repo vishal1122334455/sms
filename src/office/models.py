@@ -16,3 +16,17 @@ class ClassRoutine(models.Model):
 
     def __str__(self):
         return str(self.day) + "-" + str(self.period)
+
+
+class ExamRoutine(models.Model):
+    school = models.ForeignKey(mod.School, on_delete=models.CASCADE)
+    classes = models.ForeignKey(mod.Class, on_delete=models.CASCADE)
+    subject = models.ForeignKey(mod.Subject, on_delete=models.CASCADE)
+
+    exam_name = models.CharField(max_length=255, null=True, blank=True)
+    date = models.DateField(null=True, blank=True)
+    start_hour = models.TimeField(null=True, blank=True)
+    end_hour = models.TimeField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.school) + "-" + str(self.classes.name) + "-" + str(self.date)

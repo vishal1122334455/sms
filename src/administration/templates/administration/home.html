@@ -8,6 +8,8 @@
     Welcome admin, login as {{ request.user.username }}
     <a href="{% url 'account:logout' %}">Logout</a><br><br>
 
+    <h1>{{ request.user.member_type }}</h1>
+
     <a href="{% url 'administration:add-member' %}">Member Registration</a>
 </body>
 </html>

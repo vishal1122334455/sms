@@ -39,10 +39,18 @@ urlpatterns = [
     url(r'^schedule/$', views.Schedule.as_view(), name='schedule'),
     url(r'^schedule/class-list/$', views.ClassList.as_view(), name='class-list'),
     url(r'^schedule/class-list/(?P<classes>[a-zA-Z0-9]+)/$', views.SectionList.as_view(), name='section-list'),
+
+    #create routine
     url(r'^schedule/class-list/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9-_]+)/routine/create/$', views.RoutineCreate.as_view(), name='routine-create'),
     url(r'^schedule/class-list/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9-_]+)/routine/view/$', views.RoutineView.as_view(), name='routine-view'),
     url(r'^schedule/routine/edit/(?P<pk>[0-9]+)/$', views.RoutineEdit.as_view(), name='routine-edit'),
     url(r'^schedule/routine/delete/(?P<pk>[0-9]+)/$', views.RoutineDelete.as_view(), name='routine-delete'),
+
+    #create exam routine
+    url(r'^schedule/class-list/(?P<classes>[a-zA-Z0-9]+)/exam-routine/create/$', views.ExamRoutineCreate.as_view(), name='exam-routine-create'),
+    url(r'^schedule/class-list/(?P<classes>[a-zA-Z0-9]+)/exam-routine/view/$', views.ExamRoutineView.as_view(), name='exam-routine-view'),
+    url(r'^schedule/class-list/exam-routine/edit/(?P<pk>[0-9]+)/$', views.ExamRoutineEdit.as_view(), name='exam-routine-edit'),
+    url(r'^schedule/exam-routine/delete/(?P<pk>[0-9]+)/$', views.ExamRoutineDelete.as_view(), name='exam-routine-delete'),
 
 
     #::::start schedule module url::::
