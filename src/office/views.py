@@ -707,3 +707,222 @@ class ExamRoutineDelete(AdminPermission, View):
 #======end schedule orperation view========
 #==========================================
 #==========================================
+
+
+#==========================================
+#==========================================
+#======start notice orperation view========
+#==========================================
+#==========================================
+
+
+#notice schedule
+class Notice(AdminPermission, View):
+    template_name = 'office/notice.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#notice create
+class NoticeCreate(AdminPermission, View):
+    template_name = 'office/notice-create.html'
+
+    def get(self, request):
+        create_notice_form = forms.NoticeForm(request=request)
+
+        variables = {
+            'create_notice_form': create_notice_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        create_notice_form = forms.NoticeForm(request.POST or None, request=request)
+
+        if create_notice_form.is_valid():
+            create_notice_form.deploy(request)
+
+        variables = {
+            'create_notice_form': create_notice_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+#office notice:::class list
+class NoticeClassList(AdminPermission, View):
+    template_name = 'office/notice-class-list.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(Q(school__name=request.user.school.name)).all()
+        count = models.Class.objects.filter(Q(school__name=request.user.school.name)).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+#office notice:::notice list
+class NoticeList(AdminPermission, View):
+    template_name = 'office/notice-list.html'
+
+    def get(self, request, classes):
+
+        notices = office_model.Notice.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes)).all()
+        count = office_model.Notice.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes)).count()
+
+        variables = {
+            'notices': notices,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office notice:::notice view
+class NoticeView(AdminPermission, View):
+    template_name = 'office/notice-view.html'
+
+    def get(self, request, pk):
+
+        notices = office_model.Notice.objects.filter(Q(school__name=request.user.school.name) & Q(pk=pk)).all()
+
+        variables = {
+            'notices': notices,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office notice:::notice edit
+class NoticeEdit(AdminPermission, View):
+    template_name = 'office/notice-edit.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.Notice, pk=pk)
+
+        notices = office_model.Notice.objects.filter(Q(school__name=request.user.school.name) & Q(pk=pk) & Q(user=request.user))
+
+        notice_edit_form = forms.NoticeEditForm(request=request, instance=office_model.Notice.objects.get(pk=pk))
+
+        variables = {
+            'notices': notices,
+            'notice_edit_form': notice_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.Notice, pk=pk)
+
+        notices = office_model.Notice.objects.filter(Q(school__name=request.user.school.name) & Q(pk=pk) & Q(user=request.user))
+
+        notice_edit_form = forms.NoticeEditForm(request.POST or None, request=request, instance=office_model.Notice.objects.get(pk=pk))
+
+        if notice_edit_form.is_valid():
+            notice_edit_form.save()
+
+        variables = {
+            'notices': notices,
+            'notice_edit_form': notice_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+#notice delete
+class NoticeDelete(AdminPermission, View):
+    template_name = 'office/notice-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.Notice, pk=pk)
+
+        notices = office_model.Notice.objects.filter(Q(school__name=request.user.school.name) & Q(pk=pk) & Q(user=request.user))
+
+        viewable_notice = False
+        if notices:
+            viewable_notice = notices
+
+        variables = {
+            'viewable_notice': viewable_notice,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.Notice, pk=pk)
+
+        notices = office_model.Notice.objects.filter(Q(school__name=request.user.school.name) & Q(pk=pk) & Q(user=request.user))
+
+        viewable_notice = False
+        if notices:
+            viewable_notice = notices
+
+            if request.POST.get('yes') == 'yes':
+                routine_id = request.POST.get('notice_id')
+
+                routine_obj = office_model.Notice.objects.get(id=routine_id)
+                routine_obj.delete()
+
+                return redirect('office:notice')
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:notice')
+
+        variables = {
+            'viewable_notice': viewable_notice,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+#notice search view
+class NoticeSearch(AdminPermission, View):
+    template_name = 'office/notice-search.html'
+
+    def get(self, request):
+        search_form = forms.NoticeSearchForm()
+
+        variables = {
+            'search_form': search_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        search_form = forms.NoticeSearchForm(request.POST or None)
+
+        queries = None
+        count = None
+        if search_form.is_valid():
+            queries, count = search_form.search(request)
+
+        variables = {
+            'search_form': search_form,
+            'queries': queries,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+#==========================================
+#==========================================
+#=======end notice orperation view=========
+#==========================================
+#==========================================

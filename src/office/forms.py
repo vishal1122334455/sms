@@ -4,7 +4,7 @@ from django.db.models import Q
 import re
 
 from account import models
-from .models import ClassRoutine, ExamRoutine
+from .models import ClassRoutine, ExamRoutine, Notice
 
 
 #search form
@@ -208,3 +208,77 @@ class ExamRoutineEditForm(forms.ModelForm):
     class Meta:
         model = ClassRoutine
         fields = ('subject', 'exam_name', 'date', 'start_hour', 'end_hour',)
+
+
+#create notice
+class NoticeForm(forms.Form):
+    def __init__(self,*args,**kwargs):
+        self.request = kwargs.pop('request')
+        super(NoticeForm, self).__init__(*args,**kwargs)
+
+        self.fields['classes'].queryset = models.Class.objects.filter(Q(school=self.request.user.school))
+
+
+    classes = forms.ModelChoiceField(queryset=models.Class.objects.all(), required=False,widget=forms.Select(attrs={'class':'input-field browser-default'}))
+    title = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    description = forms.CharField( required=False, max_length= 1000 ,widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}) )
+
+
+    def clean(self):
+        classes = self.cleaned_data.get('classes')
+        title = self.cleaned_data.get('title')
+        description = self.cleaned_data.get('description')
+
+        if classes == None:
+            raise forms.ValidationError('Select Class!')
+        else:
+            if len(title) == 0:
+                raise forms.ValidationError('Write Title!')
+            else:
+                if len(description) == 0:
+                    raise forms.ValidationError('Write description!')
+
+    def deploy(self, request):
+        classes = self.cleaned_data.get('classes')
+        title = self.cleaned_data.get('title')
+        description = self.cleaned_data.get('description')
+
+        deploy = Notice(school=request.user.school, classes=classes, user=request.user, title=title, description=description)
+        deploy.save()
+
+
+
+#edit notice
+class NoticeEditForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        self.request = kwargs.pop('request')
+        super(NoticeEditForm, self).__init__(*args,**kwargs)
+
+        self.fields['classes'].queryset = models.Class.objects.filter(Q(school=self.request.user.school))
+
+
+    classes = forms.ModelChoiceField(queryset=models.Class.objects.all(), required=False,widget=forms.Select(attrs={'class':'input-field browser-default'}))
+    title = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    description = forms.CharField( required=False, max_length= 1000 ,widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}) )
+
+
+    class Meta:
+        model = Notice
+        fields = ('classes', 'title', 'description')
+
+
+
+# notice search form
+class NoticeSearchForm(forms.Form):
+    search_text = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+    def clean(self):
+        search_text = self.cleaned_data.get('search_text')
+
+    def search(self, request):
+        search_text = self.cleaned_data.get('search_text')
+
+        count = Notice.objects.filter(Q(id=search_text) & Q(school=request.user.school)).count()
+        query = Notice.objects.filter(Q(id=search_text) & Q(school=request.user.school)).all()
+
+        return query, count

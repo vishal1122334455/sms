@@ -53,7 +53,24 @@ urlpatterns = [
     url(r'^schedule/exam-routine/delete/(?P<pk>[0-9]+)/$', views.ExamRoutineDelete.as_view(), name='exam-routine-delete'),
 
 
-    #::::start schedule module url::::
+    #::::end schedule module url::::
+    #:::::::::::::::::::::::::::::::::
+
+
+
+    #:::::start notice module url:::::
+    #:::::::::::::::::::::::::::::::::
+
+    url(r'^notice/$', views.Notice.as_view(), name='notice'),
+    url(r'^notice/create/$', views.NoticeCreate.as_view(), name='notice-create'),
+    url(r'^notice/class-list/$', views.NoticeClassList.as_view(), name='notice-class-list'),
+    url(r'^notice/class-list/(?P<classes>[a-zA-Z0-9]+)/$', views.NoticeList.as_view(), name='notice-list'),
+    url(r'^notice/view/(?P<pk>[0-9]+)/$', views.NoticeView.as_view(), name='notice-view'),
+    url(r'^notice/edit/(?P<pk>[0-9]+)/$', views.NoticeEdit.as_view(), name='notice-edit'),
+    url(r'^notice/delete/(?P<pk>[0-9]+)/$', views.NoticeDelete.as_view(), name='notice-delete'),
+    url(r'^notice/search/$', views.NoticeSearch.as_view(), name='notice-search'),
+
+    #::::::end notice module url::::::
     #:::::::::::::::::::::::::::::::::
 
 ]
