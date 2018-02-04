@@ -106,4 +106,20 @@ urlpatterns = [
 
     #:::::end classroom module url::::
     #:::::::::::::::::::::::::::::::::
+
+
+    #::::::start event module url:::::
+    #:::::::::::::::::::::::::::::::::
+
+
+    url(r'^event/$', views.Event.as_view(), name='event'),
+    url(r'^event/create/$', views.EventCreate.as_view(), name='event-create'),
+    url(r'^event/list/$', views.EventList.as_view(), name='event-list'),
+    url(r'^event/list/(?P<pk>[0-9]+)/$', views.EventView.as_view(), name='event-view'),
+    url(r'^event/edit/(?P<pk>[0-9]+)/$', views.EventEdit.as_view(), name='event-edit'),
+    url(r'^event/delete/(?P<pk>[0-9]+)/$', views.EventDelete.as_view(), name='event-delete'),
+
+
+    #:::::::end event module url::::::
+    #:::::::::::::::::::::::::::::::::
 ]

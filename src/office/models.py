@@ -90,3 +90,17 @@ class Classroom(models.Model):
 
     def __str__(self):
         return str(self.school.name) + "-" + str(self.classes.name) + "-" + str(self.section.name) + "-" + str(self.room)
+
+
+#event create
+class Event(models.Model):
+    school = models.ForeignKey(mod.School, on_delete=models.CASCADE)
+    user = models.ForeignKey(mod.UserProfile, on_delete=models.CASCADE)
+
+    title = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(max_length=1000, null=True, blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.school.name) + "-" + str(self.user.username) + ":" + str(self.id)

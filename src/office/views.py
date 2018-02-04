@@ -1355,3 +1355,176 @@ class ClassroomDelete(AdminPermission, View):
 #=======end classroom module view==========
 #==========================================
 #==========================================
+
+
+#==========================================
+#==========================================
+#======start event orperation view=========
+#==========================================
+#==========================================
+
+#event
+class Event(AdminPermission, View):
+    template_name = 'office/event.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#event create
+class EventCreate(AdminPermission, View):
+    template_name = 'office/event-create.html'
+
+    def get(self, request):
+        event_form = forms.EventForm()
+
+        variables = {
+            'event_form': event_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        event_form = forms.EventForm(request.POST or None)
+
+        if event_form.is_valid():
+            event_form.deploy(request)
+
+        variables = {
+            'event_form': event_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+#office event:::list
+class EventList(AdminPermission, View):
+    template_name = 'office/event-list.html'
+
+    def get(self, request):
+
+        events = office_model.Event.objects.filter(Q(school=request.user.school)).order_by('-id').all()
+        count = office_model.Event.objects.filter(Q(school=request.user.school)).count()
+
+        variables = {
+            'events': events,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office event:::list
+class EventView(AdminPermission, View):
+    template_name = 'office/event-view.html'
+
+    def get(self, request, pk):
+
+        events = office_model.Event.objects.filter(Q(school=request.user.school) & Q(pk=pk)).all()
+
+        variables = {
+            'events': events,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#office event:::edit
+class EventEdit(AdminPermission, View):
+    template_name = 'office/event-edit.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.Event, pk=pk)
+
+        events = office_model.Event.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        event_edit_form = forms.EventEditForm(instance=office_model.Event.objects.get(pk=pk))
+
+        variables = {
+            'events': events,
+            'event_edit_form': event_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.Event, pk=pk)
+
+        events = office_model.Event.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        event_edit_form = forms.EventEditForm(request.POST or None, instance=office_model.Event.objects.get(pk=pk))
+
+        if event_edit_form.is_valid():
+            event_edit_form.save()
+
+        variables = {
+            'events': events,
+            'event_edit_form': event_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#event delete
+class EventDelete(AdminPermission, View):
+    template_name = 'office/event-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.Event, pk=pk)
+
+        events = office_model.Event.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_event = False
+        if events:
+            viewable_event = events
+
+        variables = {
+            'viewable_event': viewable_event,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.Event, pk=pk)
+
+        events = office_model.Event.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_event = False
+        if events:
+            viewable_event = events
+
+            if request.POST.get('yes') == 'yes':
+                event_id = request.POST.get('event_id')
+
+                event_obj = office_model.Event.objects.get(id=event_id)
+                event_obj.delete()
+
+                return redirect('office:event-list')
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:event-list')
+
+        variables = {
+            'viewable_event': viewable_event,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#==========================================
+#==========================================
+#=======end event orperation view==========
+#==========================================
+#==========================================

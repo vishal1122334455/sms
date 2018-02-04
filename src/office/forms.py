@@ -378,3 +378,54 @@ class ClassroomEditForm(forms.ModelForm):
     class Meta:
         model = office_model.Classroom
         fields = ('description', 'room', )
+
+
+#event create form
+class EventForm(forms.Form):
+    title = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    description = forms.CharField(required=False, max_length=1000, widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}))
+    start_date = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate datepicker'}))
+    end_date = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate datepicker'}))
+
+    def clean(self):
+        title = self.cleaned_data.get('title')
+        description = self.cleaned_data.get('description')
+        start_date = self.cleaned_data.get('start_date')
+        end_date = self.cleaned_data.get('end_date')
+
+
+        if len(title) == 0:
+            raise forms.ValidationError('Enter event title!')
+        else:
+            if len(description) == 0:
+                raise forms.ValidationError('Enter description!')
+            else:
+                if len(start_date) == 0:
+                    raise forms.ValidationError('Select event start date!')
+                else:
+                    if len(end_date) == 0:
+                        raise forms.ValidationError('Select event end date!')
+
+
+    def deploy(self, request):
+        title = self.cleaned_data.get('title')
+        description = self.cleaned_data.get('description')
+        start_date = self.cleaned_data.get('start_date')
+        end_date = self.cleaned_data.get('end_date')
+
+        deploy = office_model.Event(school=request.user.school, user=request.user, title=title, description=description, start_date=start_date, end_date=end_date)
+
+        deploy.save()
+
+
+
+#event edit form
+class EventEditForm(forms.ModelForm):
+    title = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    description = forms.CharField(required=False, max_length=1000, widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}))
+    start_date = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate datepicker'}))
+    end_date = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate datepicker'}))
+
+    class Meta:
+        model = office_model.Event
+        fields = ('title', 'description', 'start_date', 'end_date')
