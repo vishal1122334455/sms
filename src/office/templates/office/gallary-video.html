@@ -1,6 +1,6 @@
 {% extends 'office-base.html' %}
 
-{% block title %}Office | Gallary{% endblock %}
+{% block title %}Office | Gallary Video{% endblock %}
 
 {% block body %}
     <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
@@ -12,15 +12,15 @@
     <div class="col s12 m6">
         <div class="card blue-grey darken-1">
             <div class="card-content white-text">
-                <span class="card-title">Image</span>
+                <span class="card-title">Upload Video</span>
+
                 <p>
-                    In this section official can publish Image.
-                    You can also view and delete those image.
+                    In this section official can publish Video.
                 </p>
             </div>
 
             <div class="card-action">
-                <a href="{% url 'office:gallary-image' %}">Image Operations</a>
+                <a href="{% url 'office:gallary-video-create' %}">Upload Video</a>
             </div>
         </div>
     </div>
@@ -30,15 +30,14 @@
     <div class="col s12 m6">
         <div class="card blue-grey darken-1">
             <div class="card-content white-text">
-                <span class="card-title">Video</span>
+                <span class="card-title">View Video</span>
                 <p>
-                    In this section official can publish Video.
-                    In this section he also Remove those Video.
+                    In this section official can view and delete Video.
                 </p>
             </div>
 
             <div class="card-action">
-                <a href="{% url 'office:gallary-video' %}">Video Operations</a>
+                <a href="{% url 'office:gallary-video-view' %}">View Video</a>
             </div>
         </div>
     </div>

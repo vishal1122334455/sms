@@ -4,7 +4,7 @@ from django.db.models import Q
 import re
 
 from account import models
-from .models import ClassRoutine, ExamRoutine, Notice, GallaryImage
+from .models import ClassRoutine, ExamRoutine, Notice, GallaryImage, GallaryVideo
 
 
 #search form
@@ -306,5 +306,33 @@ class GallaryImageForm(forms.Form):
         image = self.cleaned_data.get('image')
 
         deploy = GallaryImage(school=request.user.school, user=request.user, description=description, image=image)
+
+        deploy.save()
+
+
+
+#gallary video upload form
+class GallaryVideoForm(forms.Form):
+    description = forms.CharField(required=False, max_length=1000, widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}))
+    video = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+
+
+    def clean(self):
+        description = self.cleaned_data.get('description')
+        video = self.cleaned_data.get('video')
+
+        if len(description) == 0:
+            raise forms.ValidationError('Write Description for this video!')
+        else:
+            if len(video) == 0:
+                raise forms.ValidationError('Enter video url!')
+
+
+    def deploy(self, request):
+        description = self.cleaned_data.get('description')
+        video = self.cleaned_data.get('video')
+
+        deploy = GallaryVideo(school=request.user.school, user=request.user, description=description, video=video)
 
         deploy.save()

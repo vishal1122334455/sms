@@ -1047,6 +1047,110 @@ class GallaryImageDelete(AdminPermission, View):
 
         return render(request, self.template_name, variables)
 
+
+#gallary-video
+class GallaryVideo(AdminPermission, View):
+    template_name = 'office/gallary-video.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+
+#gallary-video-create
+class GallaryVideoCreate(AdminPermission, View):
+    template_name = 'office/gallary-video-create.html'
+
+    def get(self, request):
+        gallary_video_form = forms.GallaryVideoForm()
+
+        variables = {
+            'gallary_video_form': gallary_video_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        gallary_video_form = forms.GallaryVideoForm(request.POST or None)
+
+        if gallary_video_form.is_valid():
+            gallary_video_form.deploy(request)
+
+        variables = {
+            'gallary_video_form': gallary_video_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+#gallary-vidoe view
+class GallaryVideoView(AdminPermission, View):
+    template_name = 'office/gallary-video-view.html'
+
+    def get(self, request):
+
+        videos = office_model.GallaryVideo.objects.filter(school=request.user.school).order_by('-id')
+
+        variables = {
+            'videos': videos,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#video delete
+class GallaryVideoDelete(AdminPermission, View):
+    template_name = 'office/gallary-video-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.GallaryVideo, pk=pk)
+
+        videos = office_model.GallaryImage.objects.filter(Q(school__name=request.user.school.name) & Q(pk=pk) & Q(user=request.user))
+
+        viewable_video = False
+        if videos:
+            viewable_video = videos
+
+        variables = {
+            'viewable_video': viewable_video,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.GallaryVideo, pk=pk)
+
+        videos = office_model.GallaryVideo.objects.filter(Q(school__name=request.user.school.name) & Q(pk=pk) & Q(user=request.user))
+
+        viewable_video = False
+        if videos:
+            viewable_video = videos
+
+            if request.POST.get('yes') == 'yes':
+                video_id = request.POST.get('video_id')
+
+                video_obj = office_model.GallaryVideo.objects.get(id=video_id)
+                video_obj.delete()
+
+                return redirect('office:gallary-video-view')
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:gallary-video-view')
+
+        variables = {
+            'viewable_video': viewable_video,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
 #==========================================
 #==========================================
 #=======end gallary orperation view========

@@ -73,10 +73,9 @@ urlpatterns = [
     #::::::end notice module url::::::
     #:::::::::::::::::::::::::::::::::
 
+
     #:::::start gallary module url::::
     #:::::::::::::::::::::::::::::::::
-
-
 
     url(r'^gallary/$', views.Gallary.as_view(), name='gallary'),
     url(r'^gallary/image/$', views.GallaryImage.as_view(), name='gallary-image'),
@@ -84,6 +83,11 @@ urlpatterns = [
     url(r'^gallary/image/view/$', views.GallaryImageView.as_view(), name='gallary-image-view'),
     url(r'^gallary/image/delete/(?P<pk>[0-9]+)/$', views.GallaryImageDelete.as_view(), name='gallary-image-delete'),
 
+
+    url(r'^gallary/video/$', views.GallaryVideo.as_view(), name='gallary-video'),
+    url(r'^gallary/video/create/$', views.GallaryVideoCreate.as_view(), name='gallary-video-create'),
+    url(r'^gallary/video/view/$', views.GallaryVideoView.as_view(), name='gallary-video-view'),
+    url(r'^gallary/video/delete/(?P<pk>[0-9]+)/$', views.GallaryVideoDelete.as_view(), name='gallary-video-delete'),
 
     #::::::end gallary module url::::::
     #:::::::::::::::::::::::::::::::::

@@ -1,0 +1,31 @@
+{% extends 'office-base.html' %}
+
+{% block title %}Office | Video View{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Official : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+        <h5>Video Gallary</h5>
+    </div>
+
+    <!--class routine section-->
+    {% if videos %}
+        {% for video in videos %}
+            <div class="row">
+                <div class="col s12 m12 l12 center-align">
+                    <h5>Video ID: {{ video.id }}</h5>
+                    {{ video.video | safe }}
+
+                    <p>{{ video.description }}</p>
+
+                    <p>
+                        <a href="{% url 'office:gallary-video-delete' pk=video.id %}" class="waves-effect waves-light btn">Delete This Video</a>
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h4>No Video Found!</h4>
+    {% endif %}
+    <!--end class routine section-->
+{% endblock %}
