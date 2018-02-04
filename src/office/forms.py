@@ -429,3 +429,40 @@ class EventEditForm(forms.ModelForm):
     class Meta:
         model = office_model.Event
         fields = ('title', 'description', 'start_date', 'end_date')
+
+
+#expense catagory form
+class ExpenseCatagoryForm(forms.Form):
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    description = forms.CharField(required=False, max_length=1000, widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}))
+
+
+    def clean(self):
+        name = self.cleaned_data.get('name')
+        description = self.cleaned_data.get('description')
+
+        if len(name) == 0:
+            raise forms.ValidationError('Enter Catagory Name!')
+        else:
+            if len(description) == 0:
+                raise forms.ValidationError('Enter catagory description!')
+
+
+    def deploy(self, request):
+        name = self.cleaned_data.get('name')
+        description = self.cleaned_data.get('description')
+
+        deploy = office_model.ExpenseCatagory(school=request.user.school, user=request.user, name=name, description=description)
+
+        deploy.save()
+
+
+
+#expense catagory Edit form
+class ExpenseCatagoryEditForm(forms.ModelForm):
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    description = forms.CharField(required=False, max_length=1000, widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}))
+
+    class Meta:
+        model = office_model.ExpenseCatagory
+        fields = ('name', 'description', )

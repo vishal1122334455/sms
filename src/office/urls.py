@@ -122,4 +122,28 @@ urlpatterns = [
 
     #:::::::end event module url::::::
     #:::::::::::::::::::::::::::::::::
+
+
+    #:::::start payment module url::::
+    #:::::::::::::::::::::::::::::::::
+
+    url(r'^payment/$', views.Payment.as_view(), name='payment'),
+
+    #::::::end payment module url:::::
+    #:::::::::::::::::::::::::::::::::
+
+
+
+    #:::::start expense module url::::
+    #:::::::::::::::::::::::::::::::::
+
+    url(r'^expense/$', views.Expense.as_view(), name='expense'),
+    url(r'^expense/catagory/$', views.ExpenseCatagory.as_view(), name='expense-catagory'),
+    url(r'^expense/catagory/create/$', views.ExpenseCatagoryCreate.as_view(), name='expense-catagory-create'),
+    url(r'^expense/catagory/view/$', views.ExpenseCatagoryView.as_view(), name='expense-catagory-view'),
+    url(r'^expense/catagory/edit/(?P<pk>[0-9]+)/$', views.ExpenseCatagoryEdit.as_view(), name='expense-catagory-edit'),
+    url(r'^expense/catagory/delete/(?P<pk>[0-9]+)/$', views.ExpenseCatagoryDelete.as_view(), name='expense-catagory-delete'),
+
+    #::::::end expense module url:::::
+    #:::::::::::::::::::::::::::::::::
 ]

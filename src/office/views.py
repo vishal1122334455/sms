@@ -1528,3 +1528,193 @@ class EventDelete(AdminPermission, View):
 #=======end event orperation view==========
 #==========================================
 #==========================================
+
+
+
+#==========================================
+#==========================================
+#======start payment orperation view=======
+#==========================================
+#==========================================
+
+#payment
+class Payment(AdminPermission, View):
+    template_name = 'office/payment.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#==========================================
+#==========================================
+#=======end payment orperation view========
+#==========================================
+#==========================================
+
+
+#==========================================
+#==========================================
+#======start expenses orperation view======
+#==========================================
+#==========================================
+
+
+#expense
+class Expense(AdminPermission, View):
+    template_name = 'office/expense.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#expense catagory
+class ExpenseCatagory(AdminPermission, View):
+    template_name = 'office/expense-catagory.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+
+#expense catagory create
+class ExpenseCatagoryCreate(AdminPermission, View):
+    template_name = 'office/expense-catagory-create.html'
+
+    def get(self, request):
+        expense_catagory_form = forms.ExpenseCatagoryForm()
+
+        variables = {
+            'expense_catagory_form': expense_catagory_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        expense_catagory_form = forms.ExpenseCatagoryForm(request.POST or None)
+
+        if expense_catagory_form.is_valid():
+            expense_catagory_form.deploy(request)
+
+        variables = {
+            'expense_catagory_form': expense_catagory_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+#office expense:::catagory view
+class ExpenseCatagoryView(AdminPermission, View):
+    template_name = 'office/expense-catagory-view.html'
+
+    def get(self, request):
+
+        expense_catagory = office_model.ExpenseCatagory.objects.filter(Q(school=request.user.school)).all()
+
+        variables = {
+            'expense_catagory': expense_catagory,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office expense:::catagory edit
+class ExpenseCatagoryEdit(AdminPermission, View):
+    template_name = 'office/expense-catagory-edit.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.ExpenseCatagory, pk=pk)
+
+        catagories = office_model.ExpenseCatagory.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        expense_catagory_edit_form = forms.ExpenseCatagoryEditForm(instance=office_model.ExpenseCatagory.objects.get(Q(pk=pk) & Q(school=request.user.school)))
+
+        variables = {
+            'catagories': catagories,
+            'expense_catagory_edit_form': expense_catagory_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.ExpenseCatagory, pk=pk)
+
+        catagories = office_model.ExpenseCatagory.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        expense_catagory_edit_form = forms.ExpenseCatagoryEditForm(request.POST or None, instance=office_model.ExpenseCatagory.objects.get(Q(pk=pk) & Q(school=request.user.school)))
+
+        if expense_catagory_edit_form.is_valid():
+            expense_catagory_edit_form.save()
+
+        variables = {
+            'catagories': catagories,
+            'expense_catagory_edit_form': expense_catagory_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#expense catagory delete
+class ExpenseCatagoryDelete(AdminPermission, View):
+    template_name = 'office/expense-catagory-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.ExpenseCatagory, pk=pk)
+
+        catagories = office_model.ExpenseCatagory.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_catagory = False
+        if catagories:
+            viewable_catagory = catagories
+
+        variables = {
+            'viewable_catagory': viewable_catagory,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.ExpenseCatagory, pk=pk)
+
+        catagories = office_model.ExpenseCatagory.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_catagory = False
+        if catagories:
+            viewable_catagory = catagories
+
+            if request.POST.get('yes') == 'yes':
+                catagory_id = request.POST.get('catagory_id')
+
+                catagory_obj = office_model.ExpenseCatagory.objects.get(id=catagory_id)
+                catagory_obj.delete()
+
+                return redirect('office:expense-catagory-view')
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:expense-catagory-view')
+
+        variables = {
+            'viewable_catagory': viewable_catagory,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#==========================================
+#==========================================
+#=======end expenses orperation view=======
+#==========================================
+#==========================================

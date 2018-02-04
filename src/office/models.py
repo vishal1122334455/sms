@@ -104,3 +104,17 @@ class Event(models.Model):
 
     def __str__(self):
         return str(self.school.name) + "-" + str(self.user.username) + ":" + str(self.id)
+
+
+#expense catagory
+class ExpenseCatagory(models.Model):
+    school = models.ForeignKey(mod.School, on_delete=models.CASCADE)
+    user = models.ForeignKey(mod.UserProfile, on_delete=None)
+
+    name = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(max_length=1000, null=True, blank=True)
+
+
+    def __str__(self):
+        return str(self.school.name) + "-" + str(self.user.username) + "-" + str(self.name)
+
