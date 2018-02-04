@@ -1156,3 +1156,202 @@ class GallaryVideoDelete(AdminPermission, View):
 #=======end gallary orperation view========
 #==========================================
 #==========================================
+
+
+
+
+#==========================================
+#==========================================
+#======start classroom module view=========
+#==========================================
+#==========================================
+
+#classroom
+class Classroom(AdminPermission, View):
+    template_name = 'office/classroom.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#office classroom:::class list
+class ClassroomClasslist(AdminPermission, View):
+    template_name = 'office/classroom-classlist.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(Q(school__name=request.user.school.name)).all()
+        count = models.Class.objects.filter(Q(school__name=request.user.school.name)).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#office classroom:::section list
+class ClassroomSectionlist(AdminPermission, View):
+    template_name = 'office/classroom-sectionlist.html'
+
+    def get(self, request, classes):
+
+        sections = models.Section.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).all()
+        count = models.Section.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).count()
+
+        variables = {
+            'sections': sections,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#classroom create
+class ClassroomCreate(AdminPermission, View):
+    template_name = 'office/classroom-create.html'
+
+    def get(self, request, classes, section):
+        classroom_form = forms.ClassroomForm()
+
+        variables = {
+            'classroom_form': classroom_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, classes, section):
+        classroom_form = forms.ClassroomForm(request.POST or None)
+
+        if classroom_form.is_valid():
+            classroom_form.deploy(request, classes, section)
+
+        variables = {
+            'classroom_form': classroom_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#office classroom:::view
+class ClassroomView(AdminPermission, View):
+    template_name = 'office/classroom-view.html'
+
+    def get(self, request, classes, section):
+
+        classrooms = office_model.Classroom.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section)).all()
+        count = office_model.Classroom.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section)).count()
+
+        variables = {
+            'classrooms': classrooms,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#office notice:::notice edit
+class ClassroomEdit(AdminPermission, View):
+    template_name = 'office/classroom-edit.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.Classroom, pk=pk)
+
+        classrooms = office_model.Classroom.objects.filter(Q(school__name=request.user.school.name) & Q(pk=pk))
+
+        classroom_edit_form = forms.ClassroomEditForm(instance=office_model.Classroom.objects.get(pk=pk))
+
+        variables = {
+            'classrooms': classrooms,
+            'classroom_edit_form': classroom_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.Classroom, pk=pk)
+
+        classrooms = office_model.Classroom.objects.filter(Q(school__name=request.user.school.name) & Q(pk=pk))
+
+        classroom_edit_form = forms.ClassroomEditForm(request.POST or None, instance=office_model.Classroom.objects.get(pk=pk))
+
+        if classroom_edit_form.is_valid():
+            classroom_edit_form.save()
+
+        variables = {
+            'classrooms': classrooms,
+            'classroom_edit_form': classroom_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#classroom delete
+class ClassroomDelete(AdminPermission, View):
+    template_name = 'office/classroom-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.Classroom, pk=pk)
+
+        classrooms = office_model.Classroom.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_classroom = False
+        if classrooms:
+            viewable_classroom = classrooms
+
+        variables = {
+            'viewable_classroom': viewable_classroom,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.Classroom, pk=pk)
+
+        classrooms = office_model.Classroom.objects.filter(Q(school__name=request.user.school.name) & Q(pk=pk))
+
+        viewable_classroom = False
+        if classrooms:
+            viewable_classroom = classrooms
+
+            if request.POST.get('yes') == 'yes':
+                classroom_id = request.POST.get('classroom_id')
+
+                classroom_obj = office_model.Classroom.objects.get(id=classroom_id)
+                classroom_obj.delete()
+
+                return redirect('office:classroom-classlist')
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:classroom-classlist')
+
+        variables = {
+            'viewable_video': viewable_video,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#==========================================
+#==========================================
+#=======end classroom module view==========
+#==========================================
+#==========================================

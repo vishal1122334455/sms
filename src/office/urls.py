@@ -91,4 +91,19 @@ urlpatterns = [
 
     #::::::end gallary module url::::::
     #:::::::::::::::::::::::::::::::::
+
+
+    #::::start classroom module url:::
+    #:::::::::::::::::::::::::::::::::
+
+    url(r'^classroom/$', views.Classroom.as_view(), name='classroom'),
+    url(r'^classroom/class-list/$', views.ClassroomClasslist.as_view(), name='classroom-classlist'),
+    url(r'^classroom/(?P<classes>[a-zA-Z0-9]+)/section-list/$', views.ClassroomSectionlist.as_view(), name='classroom-sectionlist'),
+    url(r'^classroom/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9]+)/create/$', views.ClassroomCreate.as_view(), name='classroom-create'),
+    url(r'^classroom/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9]+)/view/$', views.ClassroomView.as_view(), name='classroom-view'),
+    url(r'^classroom/(?P<pk>[0-9]+)/edit/$', views.ClassroomEdit.as_view(), name='classroom-edit'),
+    url(r'^classroom/(?P<pk>[0-9]+)/delete/$', views.ClassroomDelete.as_view(), name='classroom-delete'),
+
+    #:::::end classroom module url::::
+    #:::::::::::::::::::::::::::::::::
 ]

@@ -5,6 +5,7 @@ import re
 
 from account import models
 from .models import ClassRoutine, ExamRoutine, Notice, GallaryImage, GallaryVideo
+from . import models as office_model
 
 
 #search form
@@ -336,3 +337,44 @@ class GallaryVideoForm(forms.Form):
         deploy = GallaryVideo(school=request.user.school, user=request.user, description=description, video=video)
 
         deploy.save()
+
+
+
+#classroom  form
+class ClassroomForm(forms.Form):
+    description = forms.CharField(required=False, max_length=1000, widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}))
+    room = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+
+
+    def clean(self):
+        description = self.cleaned_data.get('description')
+        room = self.cleaned_data.get('room')
+
+        if len(description) == 0:
+            raise forms.ValidationError('Write Description for this room!')
+        else:
+            if len(room) == 0:
+                raise forms.ValidationError('Enter room number!')
+
+
+    def deploy(self, request, classes, section):
+        description = self.cleaned_data.get('description')
+        room = self.cleaned_data.get('room')
+
+        class_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+        section_obj = models.Section.objects.get(Q(school=request.user.school) & Q(classes=class_obj) & Q(name=section))
+
+        deploy = office_model.Classroom(school=request.user.school, classes=class_obj, section=section_obj, room=room, description=description)
+
+        deploy.save()
+
+
+#class room edit form
+class ClassroomEditForm(forms.ModelForm):
+    description = forms.CharField(required=False, max_length=1000, widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}))
+    room = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+    class Meta:
+        model = office_model.Classroom
+        fields = ('description', 'room', )
