@@ -1,0 +1,46 @@
+{% extends 'office-base.html' %}
+
+{% block title %}Office | Bus{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Official : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+        <h5>Bus</h5>
+    </div>
+
+    <!--class bus section-->
+    <div class="col s12 m6">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Add Bus</span>
+                <p>
+                    In this section official can add bus.
+                    You can also view and delete those bus.
+                </p>
+            </div>
+
+            <div class="card-action">
+                <a href="{% url 'office:bus-create' %}">Create Bus</a>
+            </div>
+        </div>
+    </div>
+    <!--end class bus section-->
+
+    <!--exam bus section-->
+    <div class="col s12 m6">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">View / Edit / Delete Bus</span>
+                <p>
+                    In this section official can view / edit / delete Particular bus.
+                    In this section he also edit and remove those bus.
+                </p>
+            </div>
+
+            <div class="card-action">
+                <a href="{% url 'office:bus-view' %}">View</a>
+            </div>
+        </div>
+    </div>
+    <!--end exam routine section-->
+{% endblock %}

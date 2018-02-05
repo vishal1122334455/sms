@@ -545,3 +545,90 @@ class ExpenseEditForm(forms.ModelForm):
     class Meta:
         model = office_model.Expense
         fields = ('catagory', 'name', 'description', 'amount', 'method', 'date', )
+
+
+
+#bus form
+class BusForm(forms.Form):
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    bus_route = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    driver_name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    driver_phone = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    amount = forms.FloatField(required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+
+    def clean(self):
+        name = self.cleaned_data.get('name')
+        bus_route = self.cleaned_data.get('bus_route')
+        driver_name = self.cleaned_data.get('driver_name')
+        driver_phone = self.cleaned_data.get('driver_phone')
+        amount = self.cleaned_data.get('amount')
+
+
+        if len(name) == 0:
+            raise forms.ValidationError('Enter Bus Name!')
+        else:
+            if len(bus_route) == 0:
+                raise forms.ValidationError('Enter Bus Route!')
+            else:
+                if amount == None:
+                    raise forms.ValidationError('Enter Amount!')
+
+
+
+    def deploy(self, request):
+        name = self.cleaned_data.get('name')
+        bus_route = self.cleaned_data.get('bus_route')
+        driver_name = self.cleaned_data.get('driver_name')
+        driver_phone = self.cleaned_data.get('driver_phone')
+        amount = self.cleaned_data.get('amount')
+
+        deploy = office_model.Bus(school=request.user.school, name=name, bus_route=bus_route, driver_name=driver_name, driver_phone=driver_phone, amount=amount)
+        deploy.save()
+
+
+
+#bus edit form
+class BusEditForm(forms.ModelForm):
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    bus_route = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    driver_name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    driver_phone = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    amount = forms.FloatField(required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+
+    class Meta:
+        model = office_model.Bus
+        fields = ('name', 'bus_route', 'driver_name', 'driver_phone', 'amount', )
+
+
+
+
+#class form
+class ClassForm(forms.Form):
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+    def clean(self):
+        name = self.cleaned_data.get('name')
+
+        if len(name) == 0:
+            raise forms.ValidationError('Enter class name!')
+
+
+    def deploy(self, request):
+        name = self.cleaned_data.get('name')
+
+        deploy = models.Class(school=request.user.school, name=name)
+        deploy.save()
+
+
+
+#class edit form
+class ClassEditForm(forms.ModelForm):
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+    class Meta:
+        model = models.Class
+        fields = ('name', )
+
+

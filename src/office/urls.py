@@ -155,4 +155,32 @@ urlpatterns = [
 
     #::::::end expense module url:::::
     #:::::::::::::::::::::::::::::::::
+
+
+    #:::::::start bus module url::::::
+    #:::::::::::::::::::::::::::::::::
+
+    url(r'^bus/$', views.Bus.as_view(), name='bus'),
+    url(r'^bus/create/$', views.BusCreate.as_view(), name='bus-create'),
+    url(r'^bus/view/$', views.BusView.as_view(), name='bus-view'),
+    url(r'^bus/edit/(?P<pk>[0-9]+)/$', views.BusEdit.as_view(), name='bus-edit'),
+    url(r'^bus/delete/(?P<pk>[0-9]+)/$', views.BusDelete.as_view(), name='bus-delete'),
+
+    #::::::::end bus module url:::::::
+    #:::::::::::::::::::::::::::::::::
+
+
+    #:::::::start cass module url:::::
+    #:::::::::::::::::::::::::::::::::
+
+
+    url(r'^class/$', views.ClassHome.as_view(), name='class'),
+    url(r'^class/create/$', views.ClassCreate.as_view(), name='class-create'),
+    url(r'^class/list/$', views.ClassListView.as_view(), name='class-list-view'),
+    url(r'^class/edit/(?P<pk>[0-9]+)/$', views.ClassListEdit.as_view(), name='class-list-edit'),
+    url(r'^class/delete/(?P<pk>[0-9]+)/$', views.ClassListDelete.as_view(), name='class-list-delete'),
+
+
+    #:::::::end class module url::::::
+    #:::::::::::::::::::::::::::::::::
 ]

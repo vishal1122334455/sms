@@ -1894,3 +1894,322 @@ class ExpenseDelete(AdminPermission, View):
 #=======end expenses orperation view=======
 #==========================================
 #==========================================
+
+
+
+#==========================================
+#==========================================
+#========start bus orperation view=========
+#==========================================
+#==========================================
+
+
+#bus
+class Bus(AdminPermission, View):
+    template_name = 'office/bus.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+
+#bus create
+class BusCreate(AdminPermission, View):
+    template_name = 'office/bus-create.html'
+
+    def get(self, request):
+        bus_form = forms.BusForm()
+
+        variables = {
+            'bus_form': bus_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        bus_form = forms.BusForm(request.POST or None)
+
+        if bus_form.is_valid():
+            bus_form.deploy(request)
+
+        variables = {
+            'bus_form': bus_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#bus view
+class BusView(AdminPermission, View):
+    template_name = 'office/bus-view.html'
+
+    def get(self, request):
+
+        buses = office_model.Bus.objects.filter(Q(school=request.user.school)).all()
+        count = office_model.Bus.objects.filter(Q(school=request.user.school)).count()
+
+        variables = {
+            'buses': buses,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#office bus:::edit
+class BusEdit(AdminPermission, View):
+    template_name = 'office/bus-edit.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.Bus, pk=pk)
+
+        buses = office_model.Bus.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        bus_edit_form = forms.BusEditForm(instance=office_model.Bus.objects.get(Q(pk=pk) & Q(school=request.user.school)))
+
+        variables = {
+            'buses': buses,
+            'bus_edit_form': bus_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.Bus, pk=pk)
+
+        catagories = office_model.Bus.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        expense_edit_form = forms.BusEditForm(request.POST or None, instance=office_model.Expense.objects.get(Q(pk=pk) & Q(school=request.user.school)))
+
+        if expense_edit_form.is_valid():
+            expense_edit_form.save()
+
+        variables = {
+            'catagories': catagories,
+            'expense_edit_form': expense_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+
+#bus delete
+class BusDelete(AdminPermission, View):
+    template_name = 'office/bus-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.Bus, pk=pk)
+
+        buses = office_model.Bus.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_bus = False
+        if buses:
+            viewable_bus = buses
+
+        variables = {
+            'viewable_bus': viewable_bus,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.Bus, pk=pk)
+
+        buses = office_model.Bus.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_bus = False
+        if buses:
+            viewable_bus = buses
+
+            if request.POST.get('yes') == 'yes':
+                bus_id = request.POST.get('bus_id')
+
+                bus_obj = office_model.Bus.objects.get(id=bus_id)
+                bus_obj.delete()
+
+                return redirect('office:bus-view')
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:bus-view')
+
+        variables = {
+            'viewable_class': viewable_class,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#==========================================
+#==========================================
+#=========end bus orperation view==========
+#==========================================
+#==========================================
+
+
+
+#==========================================
+#==========================================
+#=======start class orperation view========
+#==========================================
+#==========================================
+
+
+#class module
+class ClassHome(AdminPermission, View):
+    template_name = 'office/class-home.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+
+#class create
+class ClassCreate(AdminPermission, View):
+    template_name = 'office/class-create.html'
+
+    def get(self, request):
+        class_form = forms.ClassForm()
+
+        variables = {
+            'class_form': class_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        class_form = forms.ClassForm(request.POST or None)
+
+        if class_form.is_valid():
+            class_form.deploy(request)
+
+        variables = {
+            'class_form': class_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#class view
+class ClassListView(AdminPermission, View):
+    template_name = 'office/class-list-view.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(school=request.user.school).all()
+        count = models.Class.objects.filter(school=request.user.school).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#office class:::edit
+class ClassListEdit(AdminPermission, View):
+    template_name = 'office/class-list-edit.html'
+
+    def get(self, request, pk):
+        get_object_or_404(models.Class, pk=pk)
+
+        classes = models.Class.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        class_edit_form = forms.ClassEditForm(instance=models.Class.objects.get(Q(pk=pk) & Q(school=request.user.school)))
+
+        variables = {
+            'classes': classes,
+            'class_edit_form': class_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(models.Class, pk=pk)
+
+        classes = models.Class.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        class_edit_form = forms.ClassEditForm(request.POST or None, instance=models.Class.objects.get(Q(pk=pk) & Q(school=request.user.school)))
+
+        if class_edit_form.is_valid():
+            class_edit_form.save()
+
+        variables = {
+            'classes': classes,
+            'class_edit_form': class_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#class delete
+class ClassListDelete(AdminPermission, View):
+    template_name = 'office/class-list-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(models.Class, pk=pk)
+
+        classes = models.Class.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_class = False
+        if classes:
+            viewable_class = classes
+
+        variables = {
+            'viewable_class': viewable_class,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(models.Class, pk=pk)
+
+        classes = models.Class.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_class = False
+        if classes:
+            viewable_class = classes
+
+            if request.POST.get('yes') == 'yes':
+                class_id = request.POST.get('class_id')
+
+                class_obj = models.Class.objects.get(id=class_id)
+                class_obj.delete()
+
+                return redirect('office:class-list-view')
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:class-list-view')
+
+        variables = {
+            'viewable_class': viewable_class,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#==========================================
+#==========================================
+#========end class orperation view=========
+#==========================================
+#==========================================

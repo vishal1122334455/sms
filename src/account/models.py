@@ -39,12 +39,10 @@ class Class(models.Model):
     # class name means for : if class 1 we need to write 'one'.
     name = models.CharField(max_length=255, null=True, blank=True)
 
-    # class name means for : if class 1 we need to write 1.
-    name_with_int = models.IntegerField(null=True, blank=True)
     added_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.school) + " - " + str(self.name_with_int)
+        return str(self.school) + " - " + str(self.name)
 
 
 # section model

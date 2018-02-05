@@ -135,3 +135,18 @@ class Expense(models.Model):
 
     def __str__(self):
         return str(self.school.name) + "-" + str(self.catagory.name) + "-" + str(self.user.username)
+
+
+#bus
+class Bus(models.Model):
+    school = models.ForeignKey(mod.School, on_delete=models.CASCADE)
+
+    name = models.CharField(max_length=255, blank=True, null=True)
+    bus_route = models.CharField(max_length=255, null=True, blank=True)
+    driver_name = models.CharField(max_length=255, null=True, blank=True)
+    driver_phone = models.CharField(max_length=255, null=True, blank=True)
+    amount = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.school.name) + "-" + str(self.name) + ":" + str(self.bus_route)
+

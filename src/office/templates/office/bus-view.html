@@ -1,0 +1,62 @@
+{% extends 'office-base.html' %}
+
+{% block title %}Office | Bus View{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Official : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+    </div>
+
+    <!--member search section-->
+    {% if buses %}
+        <div class="col s12 m12">
+            <h5>Total {{ count }} bus found : </h5>
+        </div>
+
+        {% for bus in buses %}
+            <div class="col s12 m12">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">Bus Name : {{ bus.name | title }}</span>
+
+                        <p>
+                            School : {{ bus.school.name | title }}
+                        </p>
+
+                        <p>
+                            Bus Route : {{ bus.bus_route }}
+                        </p>
+
+                        <p>
+                            Driver Name : {{ bus.driver_name }}
+                        </p>
+
+                        <p>
+                            Driver Phone : {{ bus.driver_phone }}
+                        </p>
+
+                        <p>
+                            Amount : {{ bus.amount }}
+                        </p>
+                    </div>
+
+                    <div class="card-action">
+                        <div class="row">
+                            <div class="col s12 m12 l12">
+                                <a href="{% url 'office:bus-edit' pk=bus.id %}">Edit Bus</a>
+                                <a href="{% url 'office:bus-delete' pk=bus.id %}">Delete Bus</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h4>No bus found!</h4>
+    {% endif %}
+    <!--end member search section-->
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

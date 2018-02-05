@@ -1,0 +1,88 @@
+{% extends 'office-base.html' %}
+
+{% block title %}Office | Edit Bus{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Official : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+    </div>
+
+    <!--member registration section-->
+    <div class="col s12 m12">
+        <div class="card white darken-1">
+            <div class="card-content black-text">
+                <span class="card-title">Edit Bus</span>
+
+                {% if buses %}
+                    <div class="row">
+                        <div class="col s12 m12 l12">
+                            <form method="post">
+                                {% csrf_token %}
+
+                                <div class="input-field col s12 m12 l12">
+                                    <i class="material-icons prefix">create</i>
+                                    {{ bus_edit_form.bus_route }}
+                                    <label for="icon_prefix white-text">Bus Route</label>
+                                </div>
+
+                                <div class="input-field col s12 m6 l6">
+                                    <i class="material-icons prefix">create</i>
+                                    {{ bus_edit_form.driver_name }}
+                                    <label for="icon_prefix white-text">Driver Name</label>
+                                </div>
+
+                                <div class="input-field col s12 m6 l6">
+                                    <i class="material-icons prefix">call</i>
+                                    {{ bus_edit_form.driver_phone }}
+                                    <label for="icon_prefix white-text">Driver Phone Number</label>
+                                </div>
+
+                                <div class="input-field col s12 m6 l6">
+                                    <i class="material-icons prefix">create</i>
+                                    {{ bus_edit_form.name }}
+                                    <label for="icon_prefix white-text">Bus Name</label>
+                                </div>
+
+                                <div class="input-field col s12 m6 l6">
+                                    <i class="material-icons prefix">create</i>
+                                    {{ bus_edit_form.amount }}
+                                    <label for="icon_prefix white-text">Amount</label>
+                                </div>
+
+                                {% if bus_edit_form.non_field_errors %}
+                                    {% for error in bus_edit_form.non_field_errors %}
+                                        <div class="col s12 m12 l12 center-align">
+                                            <p style="color: red; font-size: 20px;">
+                                                {{ error }}
+                                            </p>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+
+                                <div class="col s12 m12 l12 center-align" style="margin-bottom: 20px;">
+                                    <button class="btn waves-effect waves-light" type="submit" style="">Update
+                                        <i class="material-icons right">send</i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                {% for bus in buses %}
+                    <div class="card-action" style="margin-top: 20px;">
+                        <a href="{% url 'office:bus-delete' pk=bus.id %}">Delete Bus</a>
+                    </div>
+                {% endfor %}
+
+                {% else %}
+                    <h4>You have not enough permission to edit this bus!</h4>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!--end member registration section-->
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}
