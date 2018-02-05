@@ -118,3 +118,20 @@ class ExpenseCatagory(models.Model):
     def __str__(self):
         return str(self.school.name) + "-" + str(self.user.username) + "-" + str(self.name)
 
+
+
+#expense entry
+class Expense(models.Model):
+    school = models.ForeignKey(mod.School, on_delete=models.CASCADE)
+    catagory = models.ForeignKey(ExpenseCatagory, on_delete=None)
+    user = models.ForeignKey(mod.UserProfile, on_delete=None)
+
+    name = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(max_length=1000, null=True, blank=True)
+    amount = models.FloatField(null=True, blank=True)
+    method = models.CharField(max_length=255, null=True, blank=True)
+    date = models.DateField(null=True, blank=True)
+
+
+    def __str__(self):
+        return str(self.school.name) + "-" + str(self.catagory.name) + "-" + str(self.user.username)

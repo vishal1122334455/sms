@@ -1713,6 +1713,182 @@ class ExpenseCatagoryDelete(AdminPermission, View):
 
 
 
+#expense entr
+class ExpenseEntry(AdminPermission, View):
+    template_name = 'office/expense-entry.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+
+#expense create
+class ExpenseCreate(AdminPermission, View):
+    template_name = 'office/expense-create.html'
+
+    def get(self, request):
+        expense_create_form = forms.ExpenseForm(request=request)
+
+        variables = {
+            'expense_create_form': expense_create_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        expense_create_form = forms.ExpenseForm(request.POST or None, request=request)
+
+        if expense_create_form.is_valid():
+            expense_create_form.deploy()
+
+        variables = {
+            'expense_create_form': expense_create_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+#office expense:::expense list
+class ExpenseList(AdminPermission, View):
+    template_name = 'office/expense-list.html'
+
+    def get(self, request):
+
+        expense_catagory = office_model.ExpenseCatagory.objects.filter(Q(school=request.user.school)).all()
+
+        variables = {
+            'expense_catagory': expense_catagory,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office expense:::expense list details
+class ExpenseListDetail(AdminPermission, View):
+    template_name = 'office/expense-list-details.html'
+
+    def get(self, request, catagory):
+
+        expenses = office_model.Expense.objects.filter(Q(school=request.user.school) & Q(catagory__name=catagory)).all()
+
+        variables = {
+            'expenses': expenses,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office expense:::expense details
+class ExpenseDetail(AdminPermission, View):
+    template_name = 'office/expense-detail.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.Expense, pk=pk)
+
+        expenses = office_model.Expense.objects.filter(Q(school=request.user.school) & Q(pk=pk)).all()
+
+        variables = {
+            'expenses': expenses,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#office expense:::edit
+class ExpenseEdit(AdminPermission, View):
+    template_name = 'office/expense-edit.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.Expense, pk=pk)
+
+        catagories = office_model.Expense.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        expense_edit_form = forms.ExpenseEditForm(request=request, instance=office_model.Expense.objects.get(Q(pk=pk) & Q(school=request.user.school)))
+
+        variables = {
+            'catagories': catagories,
+            'expense_edit_form': expense_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.Expense, pk=pk)
+
+        catagories = office_model.Expense.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        expense_edit_form = forms.ExpenseEditForm(request.POST or None, request=request, instance=office_model.Expense.objects.get(Q(pk=pk) & Q(school=request.user.school)))
+
+        if expense_edit_form.is_valid():
+            expense_edit_form.save()
+
+        variables = {
+            'catagories': catagories,
+            'expense_edit_form': expense_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#expense delete
+class ExpenseDelete(AdminPermission, View):
+    template_name = 'office/expense-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(office_model.Expense, pk=pk)
+
+        expense = office_model.Expense.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_expense = False
+        if expense:
+            viewable_expense = expense
+
+        variables = {
+            'viewable_expense': viewable_expense,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(office_model.Expense, pk=pk)
+
+        expense = office_model.Expense.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_expense = False
+        if expense:
+            viewable_expense = expense
+
+            if request.POST.get('yes') == 'yes':
+                expense_id = request.POST.get('expense_id')
+
+                expense_obj = office_model.Expense.objects.get(id=expense_id)
+                expense_obj.delete()
+
+                return redirect('office:expense-list')
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:expense-list')
+
+        variables = {
+            'viewable_expense': viewable_expense,
+        }
+
+        return render(request, self.template_name, variables)
+
 #==========================================
 #==========================================
 #=======end expenses orperation view=======

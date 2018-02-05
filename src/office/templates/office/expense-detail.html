@@ -1,0 +1,50 @@
+{% extends 'office-base.html' %}
+
+{% block title %}Office | Expense-Detail{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Official : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+        <h5>Expense Detail</h5>
+    </div>
+
+    <!--class routine section-->
+    {% if expenses %}
+        {% for expense in expenses %}
+            <div class="col s12 m12">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">Expense Catagory : {{ expense.catagory.name }}</span>
+                        <p>
+                            Expense Name: {{ expense.name | title }}
+                        </p>
+
+                        <p>
+                            Amount : {{ expense.amount }}
+                        </p>
+
+                        <p>
+                            Description : {{ expense.description }}
+                        </p>
+
+                        <p>
+                            Payment Method : {{ expense.method }}
+                        </p>
+
+                        <p>
+                            Date : {{ expense.date }}
+                        </p>
+                    </div>
+
+                    <div class="card-action">
+                        <a href="{% url 'office:expense-edit' pk=expense.id %}">Edit</a>
+                        <a href="{% url 'office:expense-delete' pk=expense.id %}">Delete</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h4>You don't have any permission to view this expense!</h4>
+    {% endif %}
+    <!--end class routine section-->
+{% endblock %}

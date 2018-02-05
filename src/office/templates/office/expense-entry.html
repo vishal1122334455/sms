@@ -1,26 +1,26 @@
 {% extends 'office-base.html' %}
 
-{% block title %}Office | Expense{% endblock %}
+{% block title %}Office | Expense-Entry{% endblock %}
 
 {% block body %}
     <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
         <h5>Official : <span style="color: red;">{{ request.user.school | title }}</span></h5>
-        <h5>Expense</h5>
+        <h5>Expense Entry</h5>
     </div>
 
     <!--class routine section-->
     <div class="col s12 m6">
         <div class="card blue-grey darken-1">
             <div class="card-content white-text">
-                <span class="card-title">Add Expense Catagory</span>
+                <span class="card-title">Entry Expense</span>
                 <p>
-                    In this section official can add expense catagory.
-                    You can also view and delete those catagory.
+                    In this section official can add expense.
+                    You can also view and delete those entry.
                 </p>
             </div>
 
             <div class="card-action">
-                <a href="{% url 'office:expense-catagory' %}">View Operations</a>
+                <a href="{% url 'office:expense-create' %}">Create</a>
             </div>
         </div>
     </div>
@@ -30,15 +30,15 @@
     <div class="col s12 m6">
         <div class="card blue-grey darken-1">
             <div class="card-content white-text">
-                <span class="card-title">Entry Expense</span>
+                <span class="card-title">View / Edit / Delete Entry</span>
                 <p>
-                    In this section official can entry Particular expense.
-                    In this section he also edit and remove those expense.
+                    In this section official can edit / delete Entry.
+                    In this section he also edit and remove those Entry.
                 </p>
             </div>
 
             <div class="card-action">
-                <a href="{% url 'office:expense-entry' %}">View Operations</a>
+                <a href="{% url 'office:expense-list' %}">View Entry</a>
             </div>
         </div>
     </div>

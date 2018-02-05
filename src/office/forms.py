@@ -466,3 +466,82 @@ class ExpenseCatagoryEditForm(forms.ModelForm):
     class Meta:
         model = office_model.ExpenseCatagory
         fields = ('name', 'description', )
+
+
+
+#expense form
+payment_method = (
+        ('cash', 'Cash'),
+        ('bank', 'Bank'),
+        ('cheque', 'Cheque'),)
+
+class ExpenseForm(forms.Form):
+    def __init__(self,*args,**kwargs):
+        self.request = kwargs.pop('request')
+        super(ExpenseForm, self).__init__(*args,**kwargs)
+
+        self.fields['catagory'].queryset = office_model.ExpenseCatagory.objects.filter(Q(school=self.request.user.school))
+
+
+    catagory = forms.ModelChoiceField(queryset=office_model.ExpenseCatagory.objects.all(), required=False,widget=forms.Select(attrs={'class':'input-field browser-default'}))
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    description = forms.CharField(required=False, max_length=1000, widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}))
+    amount = forms.FloatField(required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    method = forms.ChoiceField(choices=payment_method, required=False, widget=forms.Select(attrs={'class': 'validate browser-default'}))
+    date = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate datepicker'}))
+
+    def clean(self):
+        catagory = self.cleaned_data.get('catagory')
+        name = self.cleaned_data.get('name')
+        description = self.cleaned_data.get('description')
+        amount = self.cleaned_data.get('amount')
+        method = self.cleaned_data.get('method')
+        date = self.cleaned_data.get('date')
+
+        if catagory == None:
+            raise forms.ValidationError('Select Expense Catagory!')
+        else:
+            if len(name) == 0:
+                raise forms.ValidationError('Write expense name!')
+            else:
+                if amount == None:
+                    raise forms.ValidationError('Enter expense amount!')
+                else:
+                    if method == None:
+                        raise forms.ValidationError('Select Payment Method!')
+
+
+    def deploy(self):
+        catagory = self.cleaned_data.get('catagory')
+        name = self.cleaned_data.get('name')
+        description = self.cleaned_data.get('description')
+        amount = self.cleaned_data.get('amount')
+        method = self.cleaned_data.get('method')
+        date = self.cleaned_data.get('date')
+
+        deploy = office_model.Expense(school=self.request.user.school, user=self.request.user, catagory=catagory, name=name, description=description, amount=amount, method=method, date=date)
+
+        deploy.save()
+
+
+
+#expense edit form
+class ExpenseEditForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        self.request = kwargs.pop('request')
+        super(ExpenseEditForm, self).__init__(*args,**kwargs)
+
+        self.fields['catagory'].queryset = office_model.ExpenseCatagory.objects.filter(Q(school=self.request.user.school))
+
+
+    catagory = forms.ModelChoiceField(queryset=office_model.ExpenseCatagory.objects.all(), required=False,widget=forms.Select(attrs={'class':'input-field browser-default'}))
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    description = forms.CharField(required=False, max_length=1000, widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}))
+    amount = forms.FloatField(required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    method = forms.ChoiceField(choices=payment_method, required=False, widget=forms.Select(attrs={'class': 'validate browser-default'}))
+    date = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate datepicker'}))
+
+
+    class Meta:
+        model = office_model.Expense
+        fields = ('catagory', 'name', 'description', 'amount', 'method', 'date', )

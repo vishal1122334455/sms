@@ -144,6 +144,15 @@ urlpatterns = [
     url(r'^expense/catagory/edit/(?P<pk>[0-9]+)/$', views.ExpenseCatagoryEdit.as_view(), name='expense-catagory-edit'),
     url(r'^expense/catagory/delete/(?P<pk>[0-9]+)/$', views.ExpenseCatagoryDelete.as_view(), name='expense-catagory-delete'),
 
+
+    url(r'^expense/entry/$', views.ExpenseEntry.as_view(), name='expense-entry'),
+    url(r'^expense/entry/create/$', views.ExpenseCreate.as_view(), name='expense-create'),
+    url(r'^expense/entry/list/$', views.ExpenseList.as_view(), name='expense-list'),
+    url(r'^expense/entry/list/(?P<catagory>[a-zA-Z0-9-_]+)/$', views.ExpenseListDetail.as_view(), name='expense-list-detail'),
+    url(r'^expense/entry/detail/(?P<pk>[0-9]+)/$', views.ExpenseDetail.as_view(), name='expense-detail'),
+    url(r'^expense/entry/edit/(?P<pk>[0-9]+)/$', views.ExpenseEdit.as_view(), name='expense-edit'),
+    url(r'^expense/entry/delete/(?P<pk>[0-9]+)/$', views.ExpenseDelete.as_view(), name='expense-delete'),
+
     #::::::end expense module url:::::
     #:::::::::::::::::::::::::::::::::
 ]
