@@ -1,0 +1,68 @@
+{% extends 'office-base.html' %}
+
+{% block title %}Office | Edit Section{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Official : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+    </div>
+
+    <!--member registration section-->
+    <div class="col s12 m12">
+        <div class="card white darken-1">
+            <div class="card-content black-text">
+                <span class="card-title">Edit Class</span>
+
+                <div class="row">
+                    <div class="col s12 m12 l12">
+                        {% if sections %}
+                            {% for section in sections %}
+                                <h5>Section Name: {{ section.name }}</h5>
+                            {% endfor %}
+                            <form method="post">
+                                {% csrf_token %}
+
+                                <div class="input-field col s12 m12 l12">
+                                    <i class="material-icons prefix">create</i>
+                                    {{ section_edit_form.name }}
+                                    <label for="icon_prefix white-text">Section Name</label>
+                                </div>
+
+                                {% if section_edit_form.non_field_errors %}
+                                    {% for error in section_edit_form.non_field_errors %}
+                                        <div class="col s12 m12 l12 center-align">
+                                            <p style="color: red; font-size: 20px;">
+                                                {{ error }}
+                                            </p>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+
+                                <div class="col s12 m12 l12 center-align" style="margin-bottom: 20px;">
+                                    <button class="btn waves-effect waves-light" type="submit" style="">Update
+                                        <i class="material-icons right">send</i>
+                                    </button>
+                                </div>
+                            </form>
+                        {% else %}
+                            <h3>You have not enough permission to edit this Section</h3>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if sections %}
+                    {% for section in sections %}
+                        <div class="card-action" style="margin-top: 20px;">
+                            <a href="{% url 'office:section-delete' pk=section.id %}">Delete Section</a>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!--end member registration section-->
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

@@ -632,3 +632,37 @@ class ClassEditForm(forms.ModelForm):
         fields = ('name', )
 
 
+
+#section create
+class SectionForm(forms.Form):
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+
+    def clean(self):
+        name = self.cleaned_data.get('name')
+
+        if len(name) == 0:
+            raise forms.ValidationError('Enter Section Name!')
+
+
+    def deploy(self, request, classes):
+        name = self.cleaned_data.get('name')
+
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+
+        deploy = models.Section(school=request.user.school, classes=classes_obj, name=name)
+        deploy.save()
+
+
+
+#section create
+class SectionEditForm(forms.ModelForm):
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+
+    class Meta:
+        model = models.Section
+        fields = ('name', )
+
+
+

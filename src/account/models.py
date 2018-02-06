@@ -57,7 +57,7 @@ class Section(models.Model):
     added_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.school.name) + " - " + str(self.classes.name_with_int) + " : " + str(self.name)
+        return str(self.school.name) + " - " + str(self.classes.name) + " : " + str(self.name)
 
 #subjects
 class Subject(models.Model):

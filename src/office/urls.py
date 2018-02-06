@@ -170,7 +170,7 @@ urlpatterns = [
     #:::::::::::::::::::::::::::::::::
 
 
-    #:::::::start cass module url:::::
+    #::::::start class module url:::::
     #:::::::::::::::::::::::::::::::::
 
 
@@ -182,5 +182,21 @@ urlpatterns = [
 
 
     #:::::::end class module url::::::
+    #:::::::::::::::::::::::::::::::::
+
+
+    #:::::::start cass module url:::::
+    #:::::::::::::::::::::::::::::::::
+
+
+    url(r'^section/$', views.SectionHome.as_view(), name='section'),
+    url(r'^section/class-list/$', views.SectionClassList.as_view(), name='section-class-list'),
+    url(r'^section/class-list/(?P<classes>[a-zA-Z0-9-_]+)/create/$', views.SectionCreate.as_view(), name='section-create'),
+    url(r'^section/class-list/(?P<classes>[a-zA-Z0-9-_]+)/view/$', views.SectionView.as_view(), name='section-view'),
+    url(r'^section/(?P<pk>[0-9]+)/edit/$', views.SectionEdit.as_view(), name='section-edit'),
+    url(r'^section/(?P<pk>[0-9]+)/delete/$', views.SectionDelete.as_view(), name='section-delete'),
+
+
+    #::::::end section module url:::::
     #:::::::::::::::::::::::::::::::::
 ]

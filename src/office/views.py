@@ -2213,3 +2213,189 @@ class ClassListDelete(AdminPermission, View):
 #========end class orperation view=========
 #==========================================
 #==========================================
+
+
+
+
+#==========================================
+#==========================================
+#======start section orperation view=======
+#==========================================
+#==========================================
+
+
+#class module
+class SectionHome(AdminPermission, View):
+    template_name = 'office/section-home.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#class module
+class SectionClassList(AdminPermission, View):
+    template_name = 'office/section-class-list.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(school=request.user.school).all()
+        count = models.Class.objects.filter(school=request.user.school).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+
+#class create
+class SectionCreate(AdminPermission, View):
+    template_name = 'office/section-create.html'
+
+    def get(self, request, classes):
+        section_form = forms.SectionForm()
+
+        variables = {
+            'section_form': section_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, classes):
+        section_form = forms.SectionForm(request.POST or None)
+
+        if section_form.is_valid():
+            section_form.deploy(request, classes)
+
+        variables = {
+            'section_form': section_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+
+#section view
+class SectionView(AdminPermission, View):
+    template_name = 'office/section-view.html'
+
+    def get(self, request, classes):
+
+        sections = models.Section.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).all()
+        count = models.Section.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).count()
+
+
+        variables = {
+            'sections': sections,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+
+#office class:::edit
+class SectionEdit(AdminPermission, View):
+    template_name = 'office/section-edit.html'
+
+    def get(self, request, pk):
+        get_object_or_404(models.Section, pk=pk)
+
+        sections = models.Section.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        section_edit_form = forms.SectionEditForm(instance=models.Section.objects.get(Q(pk=pk) & Q(school=request.user.school)))
+
+        variables = {
+            'sections': sections,
+            'section_edit_form': section_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(models.Section, pk=pk)
+
+        sections = models.Section.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        section_edit_form = forms.SectionEditForm(request.POST or None, instance=models.Section.objects.get(Q(pk=pk) & Q(school=request.user.school)))
+
+        if section_edit_form.is_valid():
+            section_edit_form.save()
+
+        variables = {
+            'sections': sections,
+            'section_edit_form': section_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+
+#section delete
+class SectionDelete(AdminPermission, View):
+    template_name = 'office/section-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(models.Section, pk=pk)
+
+        sections = models.Section.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_section = False
+        if sections:
+            viewable_section = sections
+
+        variables = {
+            'viewable_section': viewable_section,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(models.Section, pk=pk)
+
+        sections = models.Section.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_section = False
+        if sections:
+            viewable_section = sections
+
+            if request.POST.get('yes') == 'yes':
+                section_id = request.POST.get('section_id')
+
+                section_obj = models.Section.objects.get(id=section_id)
+                section_obj.delete()
+
+                return redirect('office:section-class-list')
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:section-class-list')
+
+        variables = {
+            'viewable_section': viewable_section,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+
+#==========================================
+#==========================================
+#=======end section orperation view========
+#==========================================
+#==========================================
