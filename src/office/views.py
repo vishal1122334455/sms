@@ -2399,3 +2399,185 @@ class SectionDelete(AdminPermission, View):
 #=======end section orperation view========
 #==========================================
 #==========================================
+
+
+
+
+#==========================================
+#==========================================
+#======start subject orperation view=======
+#==========================================
+#==========================================
+
+
+#class module
+class Subject(AdminPermission, View):
+    template_name = 'office/subject.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#class module
+class SubjectClassList(AdminPermission, View):
+    template_name = 'office/subject-class-list.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(Q(school=request.user.school)).all()
+        count = models.Class.objects.filter(Q(school=request.user.school)).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#subject create
+class SubjectCreate(AdminPermission, View):
+    template_name = 'office/subject-create.html'
+
+    def get(self, request, classes):
+        subject_form = forms.SubjectForm()
+
+        variables = {
+            'subject_form': subject_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, classes):
+        subject_form = forms.SubjectForm(request.POST or None)
+
+        if subject_form.is_valid():
+            subject_form.deploy(request, classes)
+
+        variables = {
+            'subject_form': subject_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+
+#class module
+class SubjectView(AdminPermission, View):
+    template_name = 'office/subject-list.html'
+
+    def get(self, request, classes):
+
+        subjects = models.Subject.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).all()
+        count = models.Subject.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).count()
+
+
+        variables = {
+            'subjects': subjects,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+
+#office subject:::edit
+class SubjectEdit(AdminPermission, View):
+    template_name = 'office/subject-edit.html'
+
+    def get(self, request, pk):
+        get_object_or_404(models.Subject, pk=pk)
+
+        subjects = models.Subject.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        subject_edit_form = forms.SubjectEditForm(instance=models.Subject.objects.get(Q(pk=pk) & Q(school=request.user.school)))
+
+        variables = {
+            'subjects': subjects,
+            'subject_edit_form': subject_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(models.Subject, pk=pk)
+
+        subjects = models.Subject.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        subject_edit_form = forms.SubjectEditForm(request.POST or None, instance=models.Subject.objects.get(Q(pk=pk) & Q(school=request.user.school)))
+
+        if subject_edit_form.is_valid():
+            subject_edit_form.save()
+
+        variables = {
+            'subjects': subjects,
+            'subject_edit_form': subject_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#subject delete
+class SubjectDelete(AdminPermission, View):
+    template_name = 'office/subject-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(models.Subject, pk=pk)
+
+        subjects = models.Subject.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_subject = False
+        if subjects:
+            viewable_subject = subjects
+
+        variables = {
+            'viewable_subject': viewable_subject,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(models.Subject, pk=pk)
+
+        subjects = models.Subject.objects.filter(Q(school=request.user.school) & Q(pk=pk))
+
+        viewable_subject = False
+        if subjects:
+            viewable_subject = subjects
+
+            if request.POST.get('yes') == 'yes':
+                subject_id = request.POST.get('subject_id')
+
+                subject_obj = models.Subject.objects.get(id=subject_id)
+                subject_obj.delete()
+
+                return redirect('office:subject-class-list')
+
+            elif request.POST.get('no') == 'no':
+                return redirect('office:subject-class-list')
+
+        variables = {
+            'viewable_subject': viewable_subject,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+#==========================================
+#==========================================
+#=======end subject orperation view========
+#==========================================
+#==========================================

@@ -185,7 +185,7 @@ urlpatterns = [
     #:::::::::::::::::::::::::::::::::
 
 
-    #:::::::start cass module url:::::
+    #:::::start section module url::::
     #:::::::::::::::::::::::::::::::::
 
 
@@ -198,5 +198,22 @@ urlpatterns = [
 
 
     #::::::end section module url:::::
+    #:::::::::::::::::::::::::::::::::
+
+
+
+    #:::::start subject module url::::
+    #:::::::::::::::::::::::::::::::::
+
+
+    url(r'^subject/$', views.Subject.as_view(), name='subject'),
+    url(r'^subject/class-list/$', views.SubjectClassList.as_view(), name='subject-class-list'),
+    url(r'^subject/class-list/(?P<classes>[a-zA-Z0-9-_]+)/create/$', views.SubjectCreate.as_view(), name='subject-create'),
+    url(r'^subject/class-list/(?P<classes>[a-zA-Z0-9-_]+)/view/$', views.SubjectView.as_view(), name='subject-view'),
+    url(r'^subject/edit/(?P<pk>[0-9]+)/$', views.SubjectEdit.as_view(), name='subject-edit'),
+    url(r'^subject/delete/(?P<pk>[0-9]+)/$', views.SubjectDelete.as_view(), name='subject-delete'),
+
+
+    #::::::end subject module url:::::
     #:::::::::::::::::::::::::::::::::
 ]

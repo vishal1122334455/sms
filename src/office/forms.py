@@ -666,3 +666,30 @@ class SectionEditForm(forms.ModelForm):
 
 
 
+#subject form
+class SubjectForm(forms.Form):
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+    def clean(self):
+        name = self.cleaned_data.get('name')
+
+        if len(name) == 0:
+            raise forms.ValidationError('Enter Section Name!')
+
+    def deploy(self, request, classes):
+        name = self.cleaned_data.get('name')
+
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+
+        deploy = models.Subject(school=request.user.school, classes=classes_obj, name=name)
+        deploy.save()
+
+
+#subject edit form
+class SubjectEditForm(forms.ModelForm):
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+    class Meta:
+        model = models.Subject
+        fields = ('name', )
+

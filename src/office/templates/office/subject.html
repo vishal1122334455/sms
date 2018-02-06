@@ -1,0 +1,46 @@
+{% extends 'office-base.html' %}
+
+{% block title %}Office | Subject{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Official : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+        <h5>Subject</h5>
+    </div>
+
+    <!--class bus section-->
+    <div class="col s12 m6">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Add Subject</span>
+                <p>
+                    In this section official can add subject.
+                    You can also view and delete those subject.
+                </p>
+            </div>
+
+            <div class="card-action">
+                <a href="{% url 'office:subject-class-list' %}">Create Subject</a>
+            </div>
+        </div>
+    </div>
+    <!--end class bus section-->
+
+    <!--exam bus section-->
+    <div class="col s12 m6">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">View / Edit / Delete Subject</span>
+                <p>
+                    In this section official can view / edit / delete subject.
+                    In this section he also edit and remove those subject.
+                </p>
+            </div>
+
+            <div class="card-action">
+                <a href="{% url 'office:subject-class-list' %}">View</a>
+            </div>
+        </div>
+    </div>
+    <!--end exam routine section-->
+{% endblock %}
