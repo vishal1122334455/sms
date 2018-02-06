@@ -23,6 +23,7 @@ urlpatterns = [
 
     url(r'^account/', include('account.urls', namespace='account')),
     url(r'^office/', include('office.urls', namespace='office')),
+    url(r'^student/', include('student.urls', namespace='student')),
 
     url(r'^administartion/', include('administration.urls', namespace='administration')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

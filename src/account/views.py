@@ -103,7 +103,7 @@ class Login(View):
 
 
 # registration for teacher
-class RegistrationMember(AdminPermission, View):
+class RegistrationMember(View):
     template_name = 'account/registration-member.html'
 
     def get(self, request):
@@ -270,7 +270,7 @@ class AddSchool(AdminPermission, View):
 
 
 # additional information to register student
-class AddStudent(AdminPermission, View):
+class AddStudent(View):
     template_name = 'account/add-student.html'
 
     def get(self, request, pk):

@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     #apps for office work
     'office.apps.OfficeConfig',
 
+    #apps for student
+    'student.apps.StudentConfig',
+
     #administration app
     'administration.apps.AdministrationConfig',
 ]
