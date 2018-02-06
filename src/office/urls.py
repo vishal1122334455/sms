@@ -216,4 +216,7 @@ urlpatterns = [
 
     #::::::end subject module url:::::
     #:::::::::::::::::::::::::::::::::
+
+    url(r'^profile/$', views.Profile.as_view(), name='profile'),
+    url(r'^change-password/$', views.ChangePassword.as_view(), name='change-password'),
 ]

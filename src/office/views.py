@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.db.models import Q
+from django.contrib.auth import update_session_auth_hash
 
 from administration.views import AdminPermission
 
@@ -2581,3 +2582,73 @@ class SubjectDelete(AdminPermission, View):
 #=======end subject orperation view========
 #==========================================
 #==========================================
+
+
+
+#user profile update
+class Profile(AdminPermission, View):
+    template_name = 'office/profile.html'
+
+    def get(self, request):
+
+        pp_change_form = forms.ProfilePictureUploadForm()
+        info_change_form = forms.ProfileUpdateForm(instance=models.UserProfile.objects.get(id=request.user.id))
+
+        variables = {
+            'pp_change_form': pp_change_form,
+            'info_change_form': info_change_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pp_change_form = forms.ProfilePictureUploadForm(request.POST or None, request.FILES, instance=models.UserProfile.objects.get(id=request.user.id))
+        info_change_form = forms.ProfileUpdateForm(request.POST or None, instance=models.UserProfile.objects.get(id=request.user.id))
+
+        if request.POST.get('pp_change') == 'pp_change':
+            if pp_change_form.is_valid():
+                pp_change_form.save()
+
+
+        if request.POST.get('info_change') == 'info_change':
+            if info_change_form.is_valid():
+                info_change_form.save()
+                return redirect('office:profile')
+
+
+        variables = {
+            'pp_change_form': pp_change_form,
+            'info_change_form': info_change_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#change password
+class ChangePassword(AdminPermission, View):
+    template_name = 'office/change-password.html'
+
+    def get(self, request):
+        change_password_form = forms.ChangePasswordForm(request.user)
+
+        variables = {
+            'change_password_form': change_password_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        change_password_form = forms.ChangePasswordForm(data=request.POST or None, user=request.user)
+
+        if change_password_form.is_valid():
+            change_password_form.save()
+            update_session_auth_hash(request, change_password_form.user)
+
+            return redirect('office:profile')
+
+        variables = {
+            'change_password_form': change_password_form,
+        }
+
+        return render(request, self.template_name, variables)

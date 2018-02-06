@@ -45,7 +45,8 @@
                                         <ul class="left">
                                             <!-- Dropdown Trigger -->
                                             <li><a class="dropdown-button black-text" href="{% url 'office:index' %}" data-activates="">Home</a></li>
-                                            <li><a class="dropdown-button black-text" href="#!">Profile</a></li>
+                                            <li><a class="dropdown-button black-text" href="{% url 'office:profile' %}">Profile</a></li>
+                                            <li><a class="dropdown-button black-text" href="{% url 'office:change-password' %}">Change Password</a></li>
                                             <li><a class="dropdown-button black-text" href="#!" data-activates="">{{ request.user.username | title }}</a></li>
                                             <li><a class="dropdown-button black-text" href="{% url 'account:logout' %}">Logout</a></li>
                                         </ul>

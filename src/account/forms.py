@@ -128,6 +128,7 @@ gender_list = (
 
 class TeacherForm(forms.ModelForm):
     gender = forms.ChoiceField(choices=gender_list, required=False, widget=forms.Select(attrs={'class': 'validate'}))
+
     class Meta:
         model = models.Teacher
         fields = '__all__'
