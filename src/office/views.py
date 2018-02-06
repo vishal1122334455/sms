@@ -3,11 +3,22 @@ from django.views import View
 from django.db.models import Q
 from django.contrib.auth import update_session_auth_hash
 
-from administration.views import AdminPermission
-
 from . import forms
 from account import models
 from . import models as office_model
+
+
+
+class OfficePermissionMixin(object):
+    def has_permissions(self, request):
+        return request.user.member_type.name == 'office'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.has_permissions(request):
+            return redirect('account:login')
+        return super(OfficePermissionMixin, self).dispatch(
+            request, *args, **kwargs)
+
 
 
 def check_user(request, pk):
@@ -23,7 +34,7 @@ def check_user(request, pk):
 
 
 #office home page
-class Home(AdminPermission, View):
+class Home(OfficePermissionMixin, View):
     template_name = 'office/index.html'
 
     def get(self, request):
@@ -40,7 +51,7 @@ class Home(AdminPermission, View):
 #==========================================
 
 #office registration for other official and student, teacher, parent, librarian
-class Registration(AdminPermission, View):
+class Registration(OfficePermissionMixin, View):
     template_name = 'office/registration.html'
 
     def get(self, request):
@@ -51,7 +62,7 @@ class Registration(AdminPermission, View):
 
 
 #member edit view
-class MemberSearch(AdminPermission, View):
+class MemberSearch(OfficePermissionMixin, View):
     template_name = 'office/search.html'
 
     def get(self, request):
@@ -81,7 +92,7 @@ class MemberSearch(AdminPermission, View):
 
 
 #member detail view
-class MemberDetail(AdminPermission, View):
+class MemberDetail(OfficePermissionMixin, View):
     template_name = 'office/member-detail.html'
 
     def get(self, request, pk):
@@ -110,7 +121,7 @@ class MemberDetail(AdminPermission, View):
         pass
 
 
-class MemberEdit(AdminPermission, View):
+class MemberEdit(OfficePermissionMixin, View):
     template_name = 'office/member-edit.html'
 
     def get(self, request, pk):
@@ -155,7 +166,7 @@ class MemberEdit(AdminPermission, View):
         return render(request, self.template_name, variables)
 
 
-class MemberDelete(AdminPermission, View):
+class MemberDelete(OfficePermissionMixin, View):
     template_name = 'office/member-delete.html'
 
     def get(self, request, pk):
@@ -204,7 +215,7 @@ class MemberDelete(AdminPermission, View):
 
 
 #office member list
-class MemberList(AdminPermission, View):
+class MemberList(OfficePermissionMixin, View):
     template_name = 'office/member-list.html'
 
     def get(self, request):
@@ -215,7 +226,7 @@ class MemberList(AdminPermission, View):
 
 
 #office member list detail
-class MemberListDetail(AdminPermission, View):
+class MemberListDetail(OfficePermissionMixin, View):
     template_name = 'office/member-list-detail.html'
 
     def get(self, request, type):
@@ -236,7 +247,7 @@ class MemberListDetail(AdminPermission, View):
 
 
 #office class detail
-class StudentClass(AdminPermission, View):
+class StudentClass(OfficePermissionMixin, View):
     template_name = 'office/student-class-list.html'
 
     def get(self, request):
@@ -256,7 +267,7 @@ class StudentClass(AdminPermission, View):
 
 
 #office :: student list in class
-class StudenListInClass(AdminPermission, View):
+class StudenListInClass(OfficePermissionMixin, View):
     template_name = 'office/student-list-in-class.html'
 
     def get(self, request, classes):
@@ -276,7 +287,7 @@ class StudenListInClass(AdminPermission, View):
 
 
 #office :: class wise section
-class ClassWiseSection(AdminPermission, View):
+class ClassWiseSection(OfficePermissionMixin, View):
     template_name = 'office/class-wise-section.html'
 
     def get(self, request, classes):
@@ -296,7 +307,7 @@ class ClassWiseSection(AdminPermission, View):
 
 
 #office :: section wise student
-class SectionWiseStudent(AdminPermission, View):
+class SectionWiseStudent(OfficePermissionMixin, View):
     template_name = 'office/section-wise-student.html'
 
     def get(self, request, classes, section):
@@ -330,7 +341,7 @@ class SectionWiseStudent(AdminPermission, View):
 
 
 #office schedule
-class Schedule(AdminPermission, View):
+class Schedule(OfficePermissionMixin, View):
     template_name = 'office/schedule.html'
 
     def get(self, request):
@@ -341,7 +352,7 @@ class Schedule(AdminPermission, View):
 
 
 #office schedule:::class list
-class ClassList(AdminPermission, View):
+class ClassList(OfficePermissionMixin, View):
     template_name = 'office/class-list.html'
 
     def get(self, request):
@@ -361,7 +372,7 @@ class ClassList(AdminPermission, View):
 
 
 #office schedule:::section list
-class SectionList(AdminPermission, View):
+class SectionList(OfficePermissionMixin, View):
     template_name = 'office/section-list.html'
 
     def get(self, request, classes):
@@ -381,7 +392,7 @@ class SectionList(AdminPermission, View):
 
 
 #office schedule::::routine create
-class RoutineCreate(AdminPermission, View):
+class RoutineCreate(OfficePermissionMixin, View):
     template_name = 'office/routine-create.html'
 
     def get(self, request, classes, section):
@@ -412,7 +423,7 @@ class RoutineCreate(AdminPermission, View):
 
 
 #routine view
-class RoutineView(AdminPermission, View):
+class RoutineView(OfficePermissionMixin, View):
     template_name = 'office/routine-view.html'
 
     def get(self, request, classes, section):
@@ -431,7 +442,7 @@ class RoutineView(AdminPermission, View):
         pass
 
 #routine edit
-class RoutineEdit(AdminPermission, View):
+class RoutineEdit(OfficePermissionMixin, View):
     template_name = 'office/routine-edit.html'
 
     def get(self, request, pk):
@@ -486,7 +497,7 @@ class RoutineEdit(AdminPermission, View):
 
 
 #routine delete
-class RoutineDelete(AdminPermission, View):
+class RoutineDelete(OfficePermissionMixin, View):
     template_name = 'office/routine-delete.html'
 
     def get(self, request, pk):
@@ -544,7 +555,7 @@ class RoutineDelete(AdminPermission, View):
 
 
 #create exam routine
-class ExamRoutineCreate(AdminPermission, View):
+class ExamRoutineCreate(OfficePermissionMixin, View):
     template_name = 'office/exam-routine-create.html'
 
     def get(self, request, classes):
@@ -576,7 +587,7 @@ class ExamRoutineCreate(AdminPermission, View):
 
 
 #exam routine view
-class ExamRoutineView(AdminPermission, View):
+class ExamRoutineView(OfficePermissionMixin, View):
     template_name = 'office/exam-routine-view.html'
 
     def get(self, request, classes):
@@ -595,7 +606,7 @@ class ExamRoutineView(AdminPermission, View):
 
 
 #exam routine edit
-class ExamRoutineEdit(AdminPermission, View):
+class ExamRoutineEdit(OfficePermissionMixin, View):
     template_name = 'office/exam-routine-edit.html'
 
     def get(self, request, pk):
@@ -649,7 +660,7 @@ class ExamRoutineEdit(AdminPermission, View):
 
 
 #exam routine delete
-class ExamRoutineDelete(AdminPermission, View):
+class ExamRoutineDelete(OfficePermissionMixin, View):
     template_name = 'office/exam-routine-delete.html'
 
     def get(self, request, pk):
@@ -718,7 +729,7 @@ class ExamRoutineDelete(AdminPermission, View):
 
 
 #notice schedule
-class Notice(AdminPermission, View):
+class Notice(OfficePermissionMixin, View):
     template_name = 'office/notice.html'
 
     def get(self, request):
@@ -729,7 +740,7 @@ class Notice(AdminPermission, View):
 
 
 #notice create
-class NoticeCreate(AdminPermission, View):
+class NoticeCreate(OfficePermissionMixin, View):
     template_name = 'office/notice-create.html'
 
     def get(self, request):
@@ -755,7 +766,7 @@ class NoticeCreate(AdminPermission, View):
 
 
 #office notice:::class list
-class NoticeClassList(AdminPermission, View):
+class NoticeClassList(OfficePermissionMixin, View):
     template_name = 'office/notice-class-list.html'
 
     def get(self, request):
@@ -774,7 +785,7 @@ class NoticeClassList(AdminPermission, View):
         pass
 
 #office notice:::notice list
-class NoticeList(AdminPermission, View):
+class NoticeList(OfficePermissionMixin, View):
     template_name = 'office/notice-list.html'
 
     def get(self, request, classes):
@@ -794,7 +805,7 @@ class NoticeList(AdminPermission, View):
 
 
 #office notice:::notice view
-class NoticeView(AdminPermission, View):
+class NoticeView(OfficePermissionMixin, View):
     template_name = 'office/notice-view.html'
 
     def get(self, request, pk):
@@ -812,7 +823,7 @@ class NoticeView(AdminPermission, View):
 
 
 #office notice:::notice edit
-class NoticeEdit(AdminPermission, View):
+class NoticeEdit(OfficePermissionMixin, View):
     template_name = 'office/notice-edit.html'
 
     def get(self, request, pk):
@@ -848,7 +859,7 @@ class NoticeEdit(AdminPermission, View):
 
 
 #notice delete
-class NoticeDelete(AdminPermission, View):
+class NoticeDelete(OfficePermissionMixin, View):
     template_name = 'office/notice-delete.html'
 
     def get(self, request, pk):
@@ -894,7 +905,7 @@ class NoticeDelete(AdminPermission, View):
 
 
 #notice search view
-class NoticeSearch(AdminPermission, View):
+class NoticeSearch(OfficePermissionMixin, View):
     template_name = 'office/notice-search.html'
 
     def get(self, request):
@@ -936,7 +947,7 @@ class NoticeSearch(AdminPermission, View):
 #==========================================
 
 #gallary
-class Gallary(AdminPermission, View):
+class Gallary(OfficePermissionMixin, View):
     template_name = 'office/gallary.html'
 
     def get(self, request):
@@ -947,7 +958,7 @@ class Gallary(AdminPermission, View):
 
 
 #gallary-image
-class GallaryImage(AdminPermission, View):
+class GallaryImage(OfficePermissionMixin, View):
     template_name = 'office/gallary-image.html'
 
     def get(self, request):
@@ -958,7 +969,7 @@ class GallaryImage(AdminPermission, View):
 
 
 #gallary-image-create
-class GallaryImageCreate(AdminPermission, View):
+class GallaryImageCreate(OfficePermissionMixin, View):
     template_name = 'office/gallary-image-create.html'
 
     def get(self, request):
@@ -985,7 +996,7 @@ class GallaryImageCreate(AdminPermission, View):
 
 
 #gallary-image view
-class GallaryImageView(AdminPermission, View):
+class GallaryImageView(OfficePermissionMixin, View):
     template_name = 'office/gallary-image-view.html'
 
     def get(self, request):
@@ -1004,7 +1015,7 @@ class GallaryImageView(AdminPermission, View):
 
 
 #image delete
-class GallaryImageDelete(AdminPermission, View):
+class GallaryImageDelete(OfficePermissionMixin, View):
     template_name = 'office/gallary-image-delete.html'
 
     def get(self, request, pk):
@@ -1050,7 +1061,7 @@ class GallaryImageDelete(AdminPermission, View):
 
 
 #gallary-video
-class GallaryVideo(AdminPermission, View):
+class GallaryVideo(OfficePermissionMixin, View):
     template_name = 'office/gallary-video.html'
 
     def get(self, request):
@@ -1062,7 +1073,7 @@ class GallaryVideo(AdminPermission, View):
 
 
 #gallary-video-create
-class GallaryVideoCreate(AdminPermission, View):
+class GallaryVideoCreate(OfficePermissionMixin, View):
     template_name = 'office/gallary-video-create.html'
 
     def get(self, request):
@@ -1088,7 +1099,7 @@ class GallaryVideoCreate(AdminPermission, View):
 
 
 #gallary-vidoe view
-class GallaryVideoView(AdminPermission, View):
+class GallaryVideoView(OfficePermissionMixin, View):
     template_name = 'office/gallary-video-view.html'
 
     def get(self, request):
@@ -1106,7 +1117,7 @@ class GallaryVideoView(AdminPermission, View):
 
 
 #video delete
-class GallaryVideoDelete(AdminPermission, View):
+class GallaryVideoDelete(OfficePermissionMixin, View):
     template_name = 'office/gallary-video-delete.html'
 
     def get(self, request, pk):
@@ -1168,7 +1179,7 @@ class GallaryVideoDelete(AdminPermission, View):
 #==========================================
 
 #classroom
-class Classroom(AdminPermission, View):
+class Classroom(OfficePermissionMixin, View):
     template_name = 'office/classroom.html'
 
     def get(self, request):
@@ -1179,7 +1190,7 @@ class Classroom(AdminPermission, View):
 
 
 #office classroom:::class list
-class ClassroomClasslist(AdminPermission, View):
+class ClassroomClasslist(OfficePermissionMixin, View):
     template_name = 'office/classroom-classlist.html'
 
     def get(self, request):
@@ -1200,7 +1211,7 @@ class ClassroomClasslist(AdminPermission, View):
 
 
 #office classroom:::section list
-class ClassroomSectionlist(AdminPermission, View):
+class ClassroomSectionlist(OfficePermissionMixin, View):
     template_name = 'office/classroom-sectionlist.html'
 
     def get(self, request, classes):
@@ -1220,7 +1231,7 @@ class ClassroomSectionlist(AdminPermission, View):
 
 
 #classroom create
-class ClassroomCreate(AdminPermission, View):
+class ClassroomCreate(OfficePermissionMixin, View):
     template_name = 'office/classroom-create.html'
 
     def get(self, request, classes, section):
@@ -1247,7 +1258,7 @@ class ClassroomCreate(AdminPermission, View):
 
 
 #office classroom:::view
-class ClassroomView(AdminPermission, View):
+class ClassroomView(OfficePermissionMixin, View):
     template_name = 'office/classroom-view.html'
 
     def get(self, request, classes, section):
@@ -1268,7 +1279,7 @@ class ClassroomView(AdminPermission, View):
 
 
 #office notice:::notice edit
-class ClassroomEdit(AdminPermission, View):
+class ClassroomEdit(OfficePermissionMixin, View):
     template_name = 'office/classroom-edit.html'
 
     def get(self, request, pk):
@@ -1305,7 +1316,7 @@ class ClassroomEdit(AdminPermission, View):
 
 
 #classroom delete
-class ClassroomDelete(AdminPermission, View):
+class ClassroomDelete(OfficePermissionMixin, View):
     template_name = 'office/classroom-delete.html'
 
     def get(self, request, pk):
@@ -1365,7 +1376,7 @@ class ClassroomDelete(AdminPermission, View):
 #==========================================
 
 #event
-class Event(AdminPermission, View):
+class Event(OfficePermissionMixin, View):
     template_name = 'office/event.html'
 
     def get(self, request):
@@ -1376,7 +1387,7 @@ class Event(AdminPermission, View):
 
 
 #event create
-class EventCreate(AdminPermission, View):
+class EventCreate(OfficePermissionMixin, View):
     template_name = 'office/event-create.html'
 
     def get(self, request):
@@ -1402,7 +1413,7 @@ class EventCreate(AdminPermission, View):
 
 
 #office event:::list
-class EventList(AdminPermission, View):
+class EventList(OfficePermissionMixin, View):
     template_name = 'office/event-list.html'
 
     def get(self, request):
@@ -1422,7 +1433,7 @@ class EventList(AdminPermission, View):
 
 
 #office event:::list
-class EventView(AdminPermission, View):
+class EventView(OfficePermissionMixin, View):
     template_name = 'office/event-view.html'
 
     def get(self, request, pk):
@@ -1441,7 +1452,7 @@ class EventView(AdminPermission, View):
 
 
 #office event:::edit
-class EventEdit(AdminPermission, View):
+class EventEdit(OfficePermissionMixin, View):
     template_name = 'office/event-edit.html'
 
     def get(self, request, pk):
@@ -1478,7 +1489,7 @@ class EventEdit(AdminPermission, View):
 
 
 #event delete
-class EventDelete(AdminPermission, View):
+class EventDelete(OfficePermissionMixin, View):
     template_name = 'office/event-delete.html'
 
     def get(self, request, pk):
@@ -1539,7 +1550,7 @@ class EventDelete(AdminPermission, View):
 #==========================================
 
 #payment
-class Payment(AdminPermission, View):
+class Payment(OfficePermissionMixin, View):
     template_name = 'office/payment.html'
 
     def get(self, request):
@@ -1564,7 +1575,7 @@ class Payment(AdminPermission, View):
 
 
 #expense
-class Expense(AdminPermission, View):
+class Expense(OfficePermissionMixin, View):
     template_name = 'office/expense.html'
 
     def get(self, request):
@@ -1575,7 +1586,7 @@ class Expense(AdminPermission, View):
 
 
 #expense catagory
-class ExpenseCatagory(AdminPermission, View):
+class ExpenseCatagory(OfficePermissionMixin, View):
     template_name = 'office/expense-catagory.html'
 
     def get(self, request):
@@ -1587,7 +1598,7 @@ class ExpenseCatagory(AdminPermission, View):
 
 
 #expense catagory create
-class ExpenseCatagoryCreate(AdminPermission, View):
+class ExpenseCatagoryCreate(OfficePermissionMixin, View):
     template_name = 'office/expense-catagory-create.html'
 
     def get(self, request):
@@ -1613,7 +1624,7 @@ class ExpenseCatagoryCreate(AdminPermission, View):
 
 
 #office expense:::catagory view
-class ExpenseCatagoryView(AdminPermission, View):
+class ExpenseCatagoryView(OfficePermissionMixin, View):
     template_name = 'office/expense-catagory-view.html'
 
     def get(self, request):
@@ -1631,7 +1642,7 @@ class ExpenseCatagoryView(AdminPermission, View):
 
 
 #office expense:::catagory edit
-class ExpenseCatagoryEdit(AdminPermission, View):
+class ExpenseCatagoryEdit(OfficePermissionMixin, View):
     template_name = 'office/expense-catagory-edit.html'
 
     def get(self, request, pk):
@@ -1668,7 +1679,7 @@ class ExpenseCatagoryEdit(AdminPermission, View):
 
 
 #expense catagory delete
-class ExpenseCatagoryDelete(AdminPermission, View):
+class ExpenseCatagoryDelete(OfficePermissionMixin, View):
     template_name = 'office/expense-catagory-delete.html'
 
     def get(self, request, pk):
@@ -1715,7 +1726,7 @@ class ExpenseCatagoryDelete(AdminPermission, View):
 
 
 #expense entr
-class ExpenseEntry(AdminPermission, View):
+class ExpenseEntry(OfficePermissionMixin, View):
     template_name = 'office/expense-entry.html'
 
     def get(self, request):
@@ -1727,7 +1738,7 @@ class ExpenseEntry(AdminPermission, View):
 
 
 #expense create
-class ExpenseCreate(AdminPermission, View):
+class ExpenseCreate(OfficePermissionMixin, View):
     template_name = 'office/expense-create.html'
 
     def get(self, request):
@@ -1753,7 +1764,7 @@ class ExpenseCreate(AdminPermission, View):
 
 
 #office expense:::expense list
-class ExpenseList(AdminPermission, View):
+class ExpenseList(OfficePermissionMixin, View):
     template_name = 'office/expense-list.html'
 
     def get(self, request):
@@ -1771,7 +1782,7 @@ class ExpenseList(AdminPermission, View):
 
 
 #office expense:::expense list details
-class ExpenseListDetail(AdminPermission, View):
+class ExpenseListDetail(OfficePermissionMixin, View):
     template_name = 'office/expense-list-details.html'
 
     def get(self, request, catagory):
@@ -1789,7 +1800,7 @@ class ExpenseListDetail(AdminPermission, View):
 
 
 #office expense:::expense details
-class ExpenseDetail(AdminPermission, View):
+class ExpenseDetail(OfficePermissionMixin, View):
     template_name = 'office/expense-detail.html'
 
     def get(self, request, pk):
@@ -1809,7 +1820,7 @@ class ExpenseDetail(AdminPermission, View):
 
 
 #office expense:::edit
-class ExpenseEdit(AdminPermission, View):
+class ExpenseEdit(OfficePermissionMixin, View):
     template_name = 'office/expense-edit.html'
 
     def get(self, request, pk):
@@ -1846,7 +1857,7 @@ class ExpenseEdit(AdminPermission, View):
 
 
 #expense delete
-class ExpenseDelete(AdminPermission, View):
+class ExpenseDelete(OfficePermissionMixin, View):
     template_name = 'office/expense-delete.html'
 
     def get(self, request, pk):
@@ -1906,7 +1917,7 @@ class ExpenseDelete(AdminPermission, View):
 
 
 #bus
-class Bus(AdminPermission, View):
+class Bus(OfficePermissionMixin, View):
     template_name = 'office/bus.html'
 
     def get(self, request):
@@ -1918,7 +1929,7 @@ class Bus(AdminPermission, View):
 
 
 #bus create
-class BusCreate(AdminPermission, View):
+class BusCreate(OfficePermissionMixin, View):
     template_name = 'office/bus-create.html'
 
     def get(self, request):
@@ -1945,7 +1956,7 @@ class BusCreate(AdminPermission, View):
 
 
 #bus view
-class BusView(AdminPermission, View):
+class BusView(OfficePermissionMixin, View):
     template_name = 'office/bus-view.html'
 
     def get(self, request):
@@ -1966,7 +1977,7 @@ class BusView(AdminPermission, View):
 
 
 #office bus:::edit
-class BusEdit(AdminPermission, View):
+class BusEdit(OfficePermissionMixin, View):
     template_name = 'office/bus-edit.html'
 
     def get(self, request, pk):
@@ -2004,7 +2015,7 @@ class BusEdit(AdminPermission, View):
 
 
 #bus delete
-class BusDelete(AdminPermission, View):
+class BusDelete(OfficePermissionMixin, View):
     template_name = 'office/bus-delete.html'
 
     def get(self, request, pk):
@@ -2066,7 +2077,7 @@ class BusDelete(AdminPermission, View):
 
 
 #class module
-class ClassHome(AdminPermission, View):
+class ClassHome(OfficePermissionMixin, View):
     template_name = 'office/class-home.html'
 
     def get(self, request):
@@ -2078,7 +2089,7 @@ class ClassHome(AdminPermission, View):
 
 
 #class create
-class ClassCreate(AdminPermission, View):
+class ClassCreate(OfficePermissionMixin, View):
     template_name = 'office/class-create.html'
 
     def get(self, request):
@@ -2105,7 +2116,7 @@ class ClassCreate(AdminPermission, View):
 
 
 #class view
-class ClassListView(AdminPermission, View):
+class ClassListView(OfficePermissionMixin, View):
     template_name = 'office/class-list-view.html'
 
     def get(self, request):
@@ -2126,7 +2137,7 @@ class ClassListView(AdminPermission, View):
 
 
 #office class:::edit
-class ClassListEdit(AdminPermission, View):
+class ClassListEdit(OfficePermissionMixin, View):
     template_name = 'office/class-list-edit.html'
 
     def get(self, request, pk):
@@ -2163,7 +2174,7 @@ class ClassListEdit(AdminPermission, View):
 
 
 #class delete
-class ClassListDelete(AdminPermission, View):
+class ClassListDelete(OfficePermissionMixin, View):
     template_name = 'office/class-list-delete.html'
 
     def get(self, request, pk):
@@ -2226,7 +2237,7 @@ class ClassListDelete(AdminPermission, View):
 
 
 #class module
-class SectionHome(AdminPermission, View):
+class SectionHome(OfficePermissionMixin, View):
     template_name = 'office/section-home.html'
 
     def get(self, request):
@@ -2237,7 +2248,7 @@ class SectionHome(AdminPermission, View):
 
 
 #class module
-class SectionClassList(AdminPermission, View):
+class SectionClassList(OfficePermissionMixin, View):
     template_name = 'office/section-class-list.html'
 
     def get(self, request):
@@ -2259,7 +2270,7 @@ class SectionClassList(AdminPermission, View):
 
 
 #class create
-class SectionCreate(AdminPermission, View):
+class SectionCreate(OfficePermissionMixin, View):
     template_name = 'office/section-create.html'
 
     def get(self, request, classes):
@@ -2287,7 +2298,7 @@ class SectionCreate(AdminPermission, View):
 
 
 #section view
-class SectionView(AdminPermission, View):
+class SectionView(OfficePermissionMixin, View):
     template_name = 'office/section-view.html'
 
     def get(self, request, classes):
@@ -2310,7 +2321,7 @@ class SectionView(AdminPermission, View):
 
 
 #office class:::edit
-class SectionEdit(AdminPermission, View):
+class SectionEdit(OfficePermissionMixin, View):
     template_name = 'office/section-edit.html'
 
     def get(self, request, pk):
@@ -2348,7 +2359,7 @@ class SectionEdit(AdminPermission, View):
 
 
 #section delete
-class SectionDelete(AdminPermission, View):
+class SectionDelete(OfficePermissionMixin, View):
     template_name = 'office/section-delete.html'
 
     def get(self, request, pk):
@@ -2412,7 +2423,7 @@ class SectionDelete(AdminPermission, View):
 
 
 #class module
-class Subject(AdminPermission, View):
+class Subject(OfficePermissionMixin, View):
     template_name = 'office/subject.html'
 
     def get(self, request):
@@ -2423,7 +2434,7 @@ class Subject(AdminPermission, View):
 
 
 #class module
-class SubjectClassList(AdminPermission, View):
+class SubjectClassList(OfficePermissionMixin, View):
     template_name = 'office/subject-class-list.html'
 
     def get(self, request):
@@ -2444,7 +2455,7 @@ class SubjectClassList(AdminPermission, View):
 
 
 #subject create
-class SubjectCreate(AdminPermission, View):
+class SubjectCreate(OfficePermissionMixin, View):
     template_name = 'office/subject-create.html'
 
     def get(self, request, classes):
@@ -2472,7 +2483,7 @@ class SubjectCreate(AdminPermission, View):
 
 
 #class module
-class SubjectView(AdminPermission, View):
+class SubjectView(OfficePermissionMixin, View):
     template_name = 'office/subject-list.html'
 
     def get(self, request, classes):
@@ -2495,7 +2506,7 @@ class SubjectView(AdminPermission, View):
 
 
 #office subject:::edit
-class SubjectEdit(AdminPermission, View):
+class SubjectEdit(OfficePermissionMixin, View):
     template_name = 'office/subject-edit.html'
 
     def get(self, request, pk):
@@ -2532,7 +2543,7 @@ class SubjectEdit(AdminPermission, View):
 
 
 #subject delete
-class SubjectDelete(AdminPermission, View):
+class SubjectDelete(OfficePermissionMixin, View):
     template_name = 'office/subject-delete.html'
 
     def get(self, request, pk):
@@ -2586,7 +2597,7 @@ class SubjectDelete(AdminPermission, View):
 
 
 #user profile update
-class Profile(AdminPermission, View):
+class Profile(OfficePermissionMixin, View):
     template_name = 'office/profile.html'
 
     def get(self, request):
@@ -2626,7 +2637,7 @@ class Profile(AdminPermission, View):
 
 
 #change password
-class ChangePassword(AdminPermission, View):
+class ChangePassword(OfficePermissionMixin, View):
     template_name = 'office/change-password.html'
 
     def get(self, request):
