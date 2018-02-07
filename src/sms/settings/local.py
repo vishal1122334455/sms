@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     #apps for student
     'student.apps.StudentConfig',
 
+    #apps for teacher
+    'teacher.apps.TeacherConfig',
+
     #administration app
     'administration.apps.AdministrationConfig',
 ]
