@@ -14,8 +14,25 @@ def logout_request(request):
     return redirect('account:login')
 
 
+
+#account create permission mixin
+class AccountPermissionMixin(object):
+    def has_permissions(self, request):
+        return request.user.member_type.name == 'office' or request.user.is_superuser
+
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            if not self.has_permissions(request):
+                return redirect('account:login')
+            else:
+                return super(AccountPermissionMixin, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('account:login')
+
+
 # registration functionality
-class Registration(View):
+class Registration(AccountPermissionMixin, View):
     """
        How office registration works:
        ------------------------------
@@ -109,7 +126,7 @@ class Login(View):
 
 
 # registration for teacher
-class RegistrationMember(View):
+class RegistrationMember(AccountPermissionMixin, View):
     template_name = 'account/registration-member.html'
 
     def get(self, request):
@@ -168,7 +185,7 @@ class RegistrationMember(View):
 
 
 # additional information to register teacher
-class AddTeacher(AdminPermission, View):
+class AddTeacher(AccountPermissionMixin, View):
     template_name = 'account/add-teacher.html'
 
     def get(self, request, pk):
@@ -204,7 +221,7 @@ class AddTeacher(AdminPermission, View):
 
 
 # additional information to register teacher
-class AddParent(AdminPermission, View):
+class AddParent(AccountPermissionMixin, View):
     template_name = 'account/add-parent.html'
 
     def get(self, request, pk):
@@ -240,7 +257,7 @@ class AddParent(AdminPermission, View):
 
 
 # additional information to register teacher
-class AddSchool(AdminPermission, View):
+class AddSchool(AccountPermissionMixin, View):
     template_name = 'account/add-school.html'
 
     def get(self, request, pk):
@@ -276,7 +293,7 @@ class AddSchool(AdminPermission, View):
 
 
 # additional information to register student
-class AddStudent(View):
+class AddStudent(AccountPermissionMixin, View):
     template_name = 'account/add-student.html'
 
     def get(self, request, pk):
@@ -312,7 +329,7 @@ class AddStudent(View):
 
 
 # additional information to register librarian
-class AddLibrarian(AdminPermission, View):
+class AddLibrarian(AccountPermissionMixin, View):
     template_name = 'account/add-librarian.html'
 
     def get(self, request, pk):

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %} {% endblock %}</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
 
     {% block style %}
@@ -44,7 +44,7 @@
                                     <div class="nav-wrapper">
                                         <ul class="left">
                                             <!-- Dropdown Trigger -->
-                                            <li><a class="dropdown-button black-text" href="{% url 'student:index' %}" data-activates="">Home</a></li>
+                                            <li><a class="dropdown-button black-text" href="{% url 'teacher:index' %}" data-activates="">Home</a></li>
                                             <li><a class="dropdown-button black-text" href="">Profile</a></li>
                                             <li><a class="dropdown-button black-text" href="">Change Password</a></li>
                                             <li><a class="dropdown-button black-text" href="#!" data-activates="">{{ request.user.username | title }}</a></li>
@@ -64,9 +64,7 @@
             </div>
         </div>
     </div>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 </body>
 </html>
 {% block js %}

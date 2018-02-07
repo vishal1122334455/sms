@@ -1,0 +1,67 @@
+{% extends 'office-base.html' %}
+
+{% block title %}Office | Attendance List{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Teacher : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+    </div>
+
+
+    <div class="col s12 m12 l12" style="margin-bottom: 50px;">
+        <h4>Today is : {{ now }}</h4>
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="col s12 m12 l12">
+                <button class="btn waves-effect waves-light" name="take_attendance" value="take_attendance" type="submit" style="">Take Today Attendance
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <!--member search section-->
+    {% if attendance_lists %}
+        <div class="col s12 m12">
+            <h5>Total {{ count }} day attendance found : </h5>
+        </div>
+
+        {% for attendance in attendance_lists %}
+            <div class="col s12 m12">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">Date : {{ attendance.date }}</span>
+
+                        <p>
+                            School: {{ attendance.school.name | title }}
+                        </p>
+
+                        <p>
+                            Class: {{ attendance.classes.name | title }}
+                        </p>
+
+                        <p>
+                            Teacher: {{ attendance.teachers.username | title }}
+                        </p>
+
+                        <p>
+                            Subject: {{ attendance.subject.name | title }}
+                        </p>
+                    </div>
+
+                    <div class="card-action">
+                        <a href="#">Get Attendance</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h4>No Attendance found!</h4>
+    {% endif %}
+    <!--end member search section-->
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

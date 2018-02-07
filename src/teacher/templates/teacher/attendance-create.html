@@ -1,0 +1,50 @@
+{% extends 'teacher-base.html' %}
+
+{% block title %}Office | Take Attendance{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Teacher : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+
+        <h5>Today : {{ now }}</h5>
+    </div>
+
+    {% if students %}
+        <div class="col s12 m12">
+            <h5>Total {{ count }} student found : </h5>
+        </div>
+
+        <div class="col s12 m12 l12">
+            {% for student in students %}
+                <p class="student_username" value="{{ student.username }}">{{ student.username }}</p>
+            {% endfor %}
+            <p class="attendance_id" value="{{ attendance_id }}">{{ attendance_id }}</p>
+        </div>
+    {% else %}
+        <h4>No Student found!</h4>
+    {% endif %}
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready( function() {
+        $(".student_username").click( function() {
+            var student_username = $(this).closest(".student_username").html();
+            var attendance_id = $(".attendance_id").html();
+
+            alert(student_username + attendance_id)
+
+            $.ajax({
+                url: '/teacher/attendance/api/',
+                data: { "student":student_username, "attendance_id":attendance_id, },
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
