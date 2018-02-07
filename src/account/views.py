@@ -93,7 +93,11 @@ class Login(View):
             user = loginForm.login()
             if user:
                 login(request, user)
-                return redirect('administration:home')
+
+                if request.user.member_type.name == 'office':
+                    return redirect('office:index')
+                elif request.user.member_type.name == 'student':
+                    return redirect('student:index')
 
         variables = {
             'loginForm': loginForm,
