@@ -17,6 +17,6 @@ urlpatterns = [
     #::::::::::::::::::::::::::::::::api:::::::::::::::::::::::::::::
     #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-    url(r'^attendance/api/$', views.AttendanceAPIPresent.as_view(), name='index'),
+    url(r'^attendance/api/$', views.AttendanceAPIPresent.as_view(), name='attendence-api'),
 
 ]

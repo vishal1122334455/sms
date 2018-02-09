@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.contrib.auth.views import login, logout
-from django.views.generic import CreateView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from . import serializers
+from django.db.models import Q
 
 from . import forms
 from . import models
@@ -298,7 +301,7 @@ class AddStudent(AccountPermissionMixin, View):
 
     def get(self, request, pk):
         get_object_or_404(models.UserProfile, pk=pk)
-        studentForm = forms.StudentForm()
+        studentForm = forms.StudentForm(request=request)
 
         variables = {
             'studentForm': studentForm,
@@ -307,19 +310,31 @@ class AddStudent(AccountPermissionMixin, View):
         return render(request, self.template_name, variables)
 
     def post(self, request, pk):
-        studentForm = forms.StudentForm(request.POST or None)
+        studentForm = forms.StudentForm(request.POST or None, request=request)
 
         if studentForm.is_valid():
-            user = studentForm.save()
+            classes = request.POST.get('classes')
+            section = request.POST.get('section')
+
+            section_obj = models.Section.objects.get(Q(school=request.user.school) & Q(classes=classes) & Q(name=section))
+
+            user = studentForm.deploy()
+
+            user.section = section_obj
+            user.save()
+
             student_id = user.id
 
             # get school object
             student_obj = models.Student.objects.get(id=student_id)
 
             # update user profile for student field
-            update_user_profile = models.UserProfile.objects.filter(id=pk).update(student=student_obj)
+            update_user_profile = models.UserProfile.objects.filter(id=pk).update(student=student_obj, classes=classes, section=section_obj)
 
-            return redirect('administration:add-member')
+            return redirect('office:index')
+
+        else:
+            print('not valid')
 
         variables = {
             'studentForm': studentForm,
@@ -362,3 +377,27 @@ class AddLibrarian(AccountPermissionMixin, View):
         }
 
         return render(request, self.template_name, variables)
+
+
+
+
+#####################################################
+#####################################################
+#                    api view                       #
+#####################################################
+#####################################################
+
+#sub catagory api view
+class SectionAPI(APIView):
+    def get(self, request):
+        if request.GET.get("classes") and request.GET.get('school'):
+            classes = request.GET.get("classes")
+            school = request.GET.get("school")
+
+            section_obj = models.Section.objects.filter(Q(classes__name=classes) & Q(school__id=school))
+
+            serializer = serializers.SectionSerializer(section_obj, many=True)
+
+            return Response(serializer.data)
+        else:
+            return redirect('account:login')

@@ -14,10 +14,13 @@ class OfficePermissionMixin(object):
         return request.user.member_type.name == 'office'
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.has_permissions(request):
+        if request.user.is_authenticated:
+            if not self.has_permissions(request):
+                return redirect('account:login')
+            return super(OfficePermissionMixin, self).dispatch(
+                request, *args, **kwargs)
+        else:
             return redirect('account:login')
-        return super(OfficePermissionMixin, self).dispatch(
-            request, *args, **kwargs)
 
 
 

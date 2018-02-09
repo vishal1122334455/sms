@@ -35,6 +35,20 @@
                     <form method="post" style="margin-top: 40px;">
                         {% csrf_token %}
 
+                        <div class="col s12 m12 l12" style="margin-top: 30px;">
+                            Select Class:
+                            {{ studentForm.classes }}
+                        </div>
+
+                        <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+                            Select Section
+                            <div id="form_sectionList">
+                                <select name="section" class="browser-default">
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="input-field col s12 m12 l12">
                             <i class="material-icons prefix">event_note</i>
                             {{ studentForm.roll }}
@@ -91,6 +105,14 @@
                     <h5>Nice To See You</h5>
                 {% endif %}
 
+                <p style="color: red; font-size: 20px;">
+                    {{ studentForm.classes.errors }}
+                    {{ studentForm.roll.errors }}
+                    {{ studentForm.birthday.errors }}
+                    {{ studentForm.gender.errors }}
+                    {{ studentForm.school_bus.errors }}
+                </p>
+
                 {% if studentForm.non_field_errors %}
                     {% for error in studentForm.non_field_errors %}
                         <div class="col s12 m12 l12 center-align">
@@ -121,5 +143,33 @@
         clear: 'Clear',
         close: 'Ok',
         closeOnSelect: false // Close upon selecting a date,
+    });
+
+
+    $("#id_classes").change(function(){
+
+        var classes = $('#id_classes').find(":selected").text();
+        var school = "{{ request.user.school.id }}"
+
+       var i = 0;
+       var container = $('<select name="section" class="browser-default" />');
+       $.ajax({
+            url: '/account/section/api/',
+            data: { "school":school, "classes":classes, },
+            dataType: 'json',
+            success: function (data) {
+                length = data.length;
+
+                for(i=0; i<length; i++){
+                    container.append('\
+                        <option>'+ data[i].name +'</option>\
+                    ');
+                };
+
+
+                $("#form_sectionList").html(container);
+
+            }
+        });
     });
 </script>

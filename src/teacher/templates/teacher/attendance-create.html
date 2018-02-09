@@ -11,14 +11,19 @@
 
     {% if students %}
         <div class="col s12 m12">
-            <h5>Total {{ count }} student found : </h5>
+            <h5 class="left">Total {{ count }} student found : </h5>
+            <h5 class="right present_status"></h5>
         </div>
 
         <div class="col s12 m12 l12">
-            {% for student in students %}
-                <p class="student_username" value="{{ student.username }}">{{ student.username }}</p>
-            {% endfor %}
-            <p class="attendance_id" value="{{ attendance_id }}">{{ attendance_id }}</p>
+            <form method="post">
+                {% for student in students %}
+                    <p class="col s6 m4 l3" style="margin-top: 30px;">
+                        <input type="checkbox" class="checkbox_stu" value="{{ student.username }}" id="{{ student.id }}" />
+                        <label for="{{ student.id }}">{{ student.username }}-{{ student.student.roll }}</label>
+                    </p>
+                {% endfor %}
+            </form>
         </div>
     {% else %}
         <h4>No Student found!</h4>
@@ -29,21 +34,41 @@
 {% block js %}
 <script>
     $(document).ready( function() {
-        $(".student_username").click( function() {
-            var student_username = $(this).closest(".student_username").html();
-            var attendance_id = $(".attendance_id").html();
+        $(".checkbox_stu").change( function() {
+            var student_username = $(this).closest(".checkbox_stu").val();
+            var attendance_id = {{ attendance_id }}
 
-            alert(student_username + attendance_id)
+            if ($(this).prop('checked')) {
+                var status = "take_present";
 
-            $.ajax({
-                url: '/teacher/attendance/api/',
-                data: { "student":student_username, "attendance_id":attendance_id, },
-                dataType: 'json',
+                $.ajax({
+                    url: '/teacher/attendance/api/',
+                    data: { "student":student_username, "attendance_id":attendance_id, "status":status, },
+                    dataType: 'json',
 
-                success: function (data) {
-                    console.log(data);
-                }
-            });
+                    success: function (data) {
+                        console.log(data);
+
+                        $(".present_status").html(data.message);
+
+                    }
+                });
+            }else{
+                var status = "take_absent";
+
+                $.ajax({
+                    url: '/teacher/attendance/api/',
+                    data: { "student":student_username, "attendance_id":attendance_id, "status":status, },
+                    dataType: 'json',
+
+                    success: function (data) {
+                        console.log(data);
+
+                        $(".present_status").html(data.message);
+
+                    }
+                });
+            }
         });
     });
 </script>

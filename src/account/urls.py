@@ -25,4 +25,8 @@ urlpatterns = [
 
     # additional information for librarian
     url(r'^add-librarian/(?P<pk>[0-9]+)/$', views.AddLibrarian.as_view(), name='add-librarian'),
+
+
+    #api
+    url(r'^section/api/$', views.SectionAPI.as_view(), name='section-list'),
 ]

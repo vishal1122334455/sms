@@ -42,7 +42,7 @@ class Class(models.Model):
     added_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.school) + " - " + str(self.name)
+        return str(self.name)
 
 
 # section model
@@ -90,6 +90,8 @@ class Parent(models.Model):
 
 # students registration
 class Student(models.Model):
+    classes = models.ForeignKey(Class, on_delete=None, blank=True, null=True)
+    section = models.ForeignKey(Section, on_delete=None, blank=True, null=True)
     roll = models.CharField(max_length=255, null=True, blank=True)
     birthday = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=255, default='male', null=True, blank=True)

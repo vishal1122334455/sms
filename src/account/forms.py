@@ -182,15 +182,22 @@ class SchoolForm(forms.ModelForm):
                     raise forms.ValidationError('Enter Phone number!')
 
 # add student form
-class StudentForm(forms.ModelForm):
+class StudentForm(forms.Form):
+    def __init__(self,*args,**kwargs):
+        self.request = kwargs.pop('request')
+        super(StudentForm, self).__init__(*args,**kwargs)
+
+        self.fields['classes'].queryset = models.Class.objects.filter(Q(school=self.request.user.school))
+
+
+    classes = forms.ModelChoiceField(queryset=models.Class.objects.all(), required=False,widget=forms.Select(attrs={'class':'input-field browser-default'}))
+    roll = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
     birthday = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate datepicker'}))
     gender = forms.ChoiceField(choices=gender_list, required=False, widget=forms.Select(attrs={'class': 'validate'}))
-
-    class Meta:
-        model = models.Student
-        fields = '__all__'
+    school_bus = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
 
     def clean(self):
+        classes = self.cleaned_data.get('classes')
         roll = self.cleaned_data.get('roll')
         birthday = self.cleaned_data.get('birthday')
         gender = self.cleaned_data.get('gender')
@@ -207,6 +214,20 @@ class StudentForm(forms.ModelForm):
                 else:
                     if not school_bus:
                         raise forms.ValidationError('Enter School Bus!')
+
+
+    def deploy(self):
+        classes = self.cleaned_data.get('classes')
+        roll = self.cleaned_data.get('roll')
+        birthday = self.cleaned_data.get('birthday')
+        gender = self.cleaned_data.get('gender')
+        school_bus = self.cleaned_data.get('school_bus')
+
+
+        deploy = models.Student(classes=classes, roll=roll, birthday=birthday, gender=gender, school_bus=school_bus)
+
+        return deploy
+
 
 
 # add librarian form

@@ -25,3 +25,11 @@ class Attendence(models.Model):
         )
 
         student.students.add(newStudent)
+
+    @classmethod
+    def removeStudent(cls, request, newStudent, id):
+        student, created = cls.objects.get_or_create(
+            id=id,
+        )
+
+        student.students.remove(newStudent)

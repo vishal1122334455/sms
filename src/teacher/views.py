@@ -14,10 +14,13 @@ class TeacherPermissionMixin(object):
         return request.user.member_type.name == 'teacher'
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.has_permissions(request):
+        if request.user.is_authenticated:
+            if not self.has_permissions(request):
+                return redirect('account:login')
+            return super(TeacherPermissionMixin, self).dispatch(
+                request, *args, **kwargs)
+        else:
             return redirect('account:login')
-        return super(TeacherPermissionMixin, self).dispatch(
-            request, *args, **kwargs)
 
 
 
@@ -151,7 +154,7 @@ class AttendanceCreate(TeacherPermissionMixin, View):
     def get(self, request, classes, section, attendance_id):
         now = datetime.datetime.now()
 
-        students = models.UserProfile.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section)).all()
+        students = models.UserProfile.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section)).order_by('student__roll').all()
         count = models.UserProfile.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section)).count()
 
         variables = {
@@ -176,54 +179,56 @@ class AttendanceCreate(TeacherPermissionMixin, View):
 
 class AttendanceAPIPresent(TeacherPermissionMixin, View):
     def get(self, request):
-        """username = request.GET.get('username')
 
-        data = {
-            'is_taken_username': User.objects.filter(username__iexact=username).exists(),
-            'name': username
-        }
-        if data['is_taken_username']:
-            data['error_message_username'] = 'Username exists!',
-            data['name'] = username"""
-
-        student_exists = False
         message = False
-        attendence_stu = False
 
         if request.user.is_authenticated:
             if request.GET.get('student') and request.GET.get('attendance_id'):
                 stu_username = request.GET.get('student')
                 attendance_id = request.GET.get('attendance_id')
+                status = request.GET.get('status')
 
+                student_obj = get_object_or_404(models.UserProfile, username=stu_username)
+                attendance_obj = get_object_or_404(teacher_model.Attendence, id=attendance_id)
 
-                student_exists = models.UserProfile.objects.filter(username=stu_username).exists()
-                attendance_exists = teacher_model.Attendence.objects.filter(id=attendance_id).exists()
-                attendance_obj = teacher_model.Attendence.objects.get(id=attendance_id)
+                #present for student when checked
+                if status == 'take_present':
+                    if student_obj and attendance_obj:
+                        stu_exists_in_present = attendance_obj.students.filter(username=stu_username).exists()
 
-                if student_exists and attendance_exists:
-                    stu_exists_in_present = attendance_obj.students.filter(username=stu_username).exists()
+                        if not stu_exists_in_present:
 
-                    if not stu_exists_in_present:
+                            student_obj = models.UserProfile.objects.get(username=stu_username)
 
-                        student_obj = models.UserProfile.objects.get(username=stu_username)
+                            teacher_model.Attendence.addStudent(request.user, student_obj, attendance_id)
 
-                        teacher_model.Attendence.addStudent(request.user, student_obj, attendance_id)
-
-                        print('student add')
+                            message = "present"
+                        else:
+                            message = "allready present count"
                     else:
-                        attendence_stu = 'student found'
+                        message = 'both not found'
 
+                #delete present for student when unchecked
+                elif status == 'take_absent':
+                    if student_obj and attendance_obj:
+                        stu_exists_in_present = attendance_obj.students.filter(username=stu_username).exists()
 
-                    message = 'found both'
-                else:
-                    message = 'both not found'
+                        if stu_exists_in_present:
+
+                            student_obj = models.UserProfile.objects.get(username=stu_username)
+
+                            teacher_model.Attendence.removeStudent(request.user, student_obj, attendance_id)
+
+                            message = "remove present"
+                        else:
+                            message = "student not found in present"
+                    else:
+                        message = 'both not found'
         else:
-            message = 'error'
+            message = 'not authenticated'
 
         x = {
             'message': message,
-            'student_exists': student_exists,
-            'attendence_stu': attendence_stu,
         }
 
         return JsonResponse(x)
