@@ -1,6 +1,6 @@
 {% extends 'teacher-base.html' %}
 
-{% block title %}Teacher | Subject List{% endblock %}
+{% block title %}Teacher | Section List{% endblock %}
 
 {% block body %}
     <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
@@ -8,34 +8,38 @@
     </div>
 
     <!--member search section-->
-    {% if subjects %}
+    {% if sections %}
         <div class="col s12 m12">
-            <h5>Total {{ count }} subject found : </h5>
+            <h5>Total {{ count }} section found : </h5>
         </div>
 
-        {% for subject in subjects %}
+        {% for section in sections %}
             <div class="col s12 m12">
                 <div class="card blue-grey darken-1">
                     <div class="card-content white-text">
-                        <span class="card-title">Subject : {{ subject.name | title }}</span>
+                        <span class="card-title">Section : {{ section.name | title }}</span>
 
                         <p>
-                            School: {{ subject.school.name | title }}
+                            School: {{ section.school.name | title }}
                         </p>
 
                         <p>
-                            Class: {{ subject.classes.name | title }}
+                            Class: {{ section.classes.name | title }}
                         </p>
                     </div>
 
                     <div class="card-action">
-                        <a href="{% url 'teacher:attendance-subject-all' classes=subject.classes.name section=section subject_id=subject.id %}">Get Attendance</a>
+                        <div class="row">
+                            <div class="col s12 m12 l12">
+                                <a href="{% url 'teacher:exam-and-marks-subject-list' classes=section.classes.name section=section.name %}">View Subject List</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         {% endfor %}
     {% else %}
-        <h4>No Subject found!</h4>
+        <h4>No member found!</h4>
     {% endif %}
     <!--end member search section-->
 {% endblock %}

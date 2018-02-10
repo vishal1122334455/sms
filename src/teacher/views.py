@@ -224,8 +224,127 @@ class AttendanceSubjectWiseStatistics(TeacherPermissionMixin, View):
         pass
 
 
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#:::::::::::::::::::start take exam and exam marks:::::::::::::::::
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+#attendance subject wise statistics
+class ExamAndMarksHome(TeacherPermissionMixin, View):
+    template_name = 'teacher/exam-and-marks-home.html'
+
+    def get(self, request):
+
+        variables = {
+
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#class list for Exam and marks
+class ExamAndMarksClassList(TeacherPermissionMixin, View):
+    template_name = 'teacher/exam-and-marks-class-list.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(Q(school=request.user.school)).all()
+        count = models.Class.objects.filter(Q(school=request.user.school)).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#exam and marks section list
+class ExamAndMarksSectionList(TeacherPermissionMixin, View):
+    template_name = 'teacher/exam-and-marks-section-list.html'
+
+    def get(self, request, classes):
+
+        sections = models.Section.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).all()
+        count = models.Section.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).count()
+
+
+        variables = {
+            'sections': sections,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#exam and marks subject list
+class ExamAndMarksSubjectList(TeacherPermissionMixin, View):
+    template_name = 'teacher/exam-and-marks-subject-list.html'
+
+    def get(self, request, classes, section):
+
+        subjects = models.Subject.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).all()
+        count = models.Subject.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).count()
+
+
+        variables = {
+            'subjects': subjects,
+            'count': count,
+            'section': section,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#exam and marks subject wise
+class ExamAndMarksSubjectAllExam(TeacherPermissionMixin, View):
+    template_name = 'teacher/attendance-list.html'
+
+    def get(self, request, classes, section, subject_id):
+
+        now = datetime.datetime.now()
+
+        attendance_lists = teacher_model.Attendence.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).order_by('-id').all()
+        count = teacher_model.Attendence.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).count()
+
+
+        variables = {
+            'attendance_lists': attendance_lists,
+            'count': count,
+            'now': now.date,
+            'subject_id': subject_id,
+            'classes': classes,
+            'section': section,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#::::::::::::::::::::end take exam and exam marks::::::::::::::::::
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+
+
+#::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #::::::::::::::::::::::::::::::::api view::::::::::::::::::::::::::
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

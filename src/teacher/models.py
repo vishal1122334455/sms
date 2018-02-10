@@ -33,3 +33,19 @@ class Attendence(models.Model):
         )
 
         student.students.remove(newStudent)
+
+
+
+#class test exam time
+class ClassTestExamTime(models.Model):
+    school = models.ForeignKey(mod.School, on_delete=models.CASCADE)
+    classes = models.ForeignKey(mod.Class, on_delete=models.CASCADE)
+    section = models.ForeignKey(mod.Section, on_delete=models.CASCADE)
+    subject = models.ForeignKey(mod.Subject, on_delete=models.CASCADE)
+    teachers = models.ForeignKey(mod.UserProfile, on_delete=None)
+
+    date = models.DateField(blank=True, null=True)
+    time = models.TimeField(blank=True, null=True)
+
+    def __str__(self):
+        return str(self.school.name) + "-" + str(self.classes.name) + "-" + str(self.section.name) + "-" + str(self.id)

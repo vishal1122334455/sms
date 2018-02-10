@@ -1,45 +1,44 @@
 {% extends 'teacher-base.html' %}
 
-{% block title %}Teacher | Home{% endblock %}
+{% block title %}Teacher | Exam And Marks Home{% endblock %}
 
 {% block body %}
     <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
         <h5>Teacher : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+        <h5>Exam and Marks</h5>
     </div>
 
     <!--member registration section-->
     <div class="col s12 m6">
         <div class="card blue-grey darken-1">
             <div class="card-content white-text">
-                <span class="card-title">Student Attendance</span>
+                <span class="card-title">Class Text Exam</span>
                 <p>
                     In this section teacher can get attendance to their student.
                 </p>
             </div>
 
             <div class="card-action">
-                <a href="{% url 'teacher:attendance-class-list' %}">Class List</a>
+                <a href="{% url 'teacher:exam-and-marks-class-list' %}">Class List</a>
             </div>
         </div>
     </div>
     <!--end member registration section-->
-
 
     <!--member registration section-->
     <div class="col s12 m6">
         <div class="card blue-grey darken-1">
             <div class="card-content white-text">
-                <span class="card-title">Exam And Marks</span>
+                <span class="card-title">Class Test Marks</span>
                 <p>
-                    In this section teacher can take exam to their students exam marks.
+                    In this section teacher can input class test marks to the related exam.
                 </p>
             </div>
 
             <div class="card-action">
-                <a href="{% url 'teacher:exam-and-marks-home' %}">View Operations</a>
+                <a href="{% url 'teacher:exam-and-marks-class-list' %}">Class List</a>
             </div>
         </div>
     </div>
     <!--end member registration section-->
-
 {% endblock %}
