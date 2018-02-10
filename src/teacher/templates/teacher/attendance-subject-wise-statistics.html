@@ -1,0 +1,59 @@
+{% extends 'teacher-base.html' %}
+{% load mathfilters %}
+
+{% block title %}Teacher | Subject Wise Attendance Statistics{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Teacher : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+        <p>Class : {{ classes | title }}</p>
+        <p>Section : {{ section | title }}</p>
+        <p>Subject : {{ subjects.name | title }}</p>
+        <p>Total Student : {{ total_student }}</p>
+    </div>
+
+    <!--member search section-->
+    {% if total_class %}
+        <div class="col s12 m12">
+            <h5>Attendance Statistics</h5>
+        </div>
+
+        <div class="row">
+            <div class="col s12 m12 l12">
+
+                <table class="bordered centered responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Roll</th>
+                            <th>Student Name</th>
+                            <th>Total Class</th>
+                            <th>Present</th>
+                            <th>Absent</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for student, present_count in zipped %}
+                            <tr>
+                                <td>{{ student.student.roll }}</td>
+                                <td>{{ student.username | title }}</td>
+                                <td>{{ total_class }}</td>
+                                <td>{{ present_count }}</td>
+                                <td>{{ total_class | sub:present_count }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    {% else %}
+        <h4>No class found!</h4>
+    {% endif %}
+    <!--end member search section-->
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

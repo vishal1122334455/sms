@@ -108,7 +108,7 @@ class AttendanceSubjectAll(TeacherPermissionMixin, View):
 
         now = datetime.datetime.now()
 
-        attendance_lists = teacher_model.Attendence.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).all()
+        attendance_lists = teacher_model.Attendence.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).order_by('-id').all()
         count = teacher_model.Attendence.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).count()
 
 
@@ -116,6 +116,9 @@ class AttendanceSubjectAll(TeacherPermissionMixin, View):
             'attendance_lists': attendance_lists,
             'count': count,
             'now': now.date,
+            'subject_id': subject_id,
+            'classes': classes,
+            'section': section,
         }
 
         return render(request, self.template_name, variables)
@@ -152,6 +155,7 @@ class AttendanceCreate(TeacherPermissionMixin, View):
     template_name = 'teacher/attendance-create.html'
 
     def get(self, request, classes, section, attendance_id):
+        get_object_or_404(teacher_model.Attendence, pk=attendance_id)
         now = datetime.datetime.now()
 
         students = models.UserProfile.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section)).order_by('student__roll').all()
@@ -167,6 +171,51 @@ class AttendanceCreate(TeacherPermissionMixin, View):
             'count': count,
             'attendance_id': attendance_id,
             'present_lists': present_lists,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#attendance subject wise statistics
+class AttendanceSubjectWiseStatistics(TeacherPermissionMixin, View):
+    template_name = 'teacher/attendance-subject-wise-statistics.html'
+
+    def get(self, request, classes, section, subject_id):
+
+        subjects = models.Subject.objects.get(Q(school=request.user.school) & Q(classes__name=classes) & Q(id=subject_id))
+
+        total_class = teacher_model.Attendence.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).count()
+        attendance_obj = teacher_model.Attendence.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).all()
+
+
+        students = models.UserProfile.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section)).order_by('student__roll').all()
+        total_student = models.UserProfile.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section)).count()
+
+        present_count_list = []
+        for student in students:
+            count = 0
+            for attendance in attendance_obj:
+                present_students_obj = attendance.students.all()
+
+                if student in present_students_obj:
+                    count = count + 1
+
+            present_count_list.append(count)
+
+        zipped = zip(students, present_count_list)
+
+        variables = {
+            'subjects': subjects,
+            'section': section,
+            'total_class': total_class,
+            'classes': classes,
+            'section': section,
+            'zipped': zipped,
+            'total_student': total_student,
         }
 
         return render(request, self.template_name, variables)

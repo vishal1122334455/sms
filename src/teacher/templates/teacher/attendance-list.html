@@ -1,6 +1,6 @@
 {% extends 'teacher-base.html' %}
 
-{% block title %}Office | Attendance List{% endblock %}
+{% block title %}Teacher | Attendance List{% endblock %}
 
 {% block body %}
     <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
@@ -16,6 +16,10 @@
             <div class="col s12 m12 l12">
                 <button class="btn waves-effect waves-light" name="take_attendance" value="take_attendance" type="submit" style="">Take Today Attendance
                 </button>
+            </div>
+
+            <div class="col s12 m12 l12" style="margin-top: 50px;">
+                <a href="{% url 'teacher:attendance-subject-wise-statistics' classes=classes section=section subject_id=subject_id  %}" class="waves-effect waves-light btn">View Attendance Statistics</a>
             </div>
 
         </form>
@@ -51,7 +55,7 @@
                     </div>
 
                     <div class="card-action">
-                        <a href="#">Get Attendance</a>
+                        <a href="{% url 'teacher:attendance-create' classes=attendance.classes.name section=attendance.section.name attendance_id=attendance.id %}">Edit Attendance</a>
                     </div>
                 </div>
             </div>
