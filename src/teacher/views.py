@@ -6,6 +6,7 @@ from django.http import JsonResponse
 
 from account import models
 from . import models as teacher_model
+from . import forms
 
 
 #student dashboard access permission mixin
@@ -311,20 +312,17 @@ class ExamAndMarksSubjectList(TeacherPermissionMixin, View):
 
 #exam and marks subject wise
 class ExamAndMarksSubjectAllExam(TeacherPermissionMixin, View):
-    template_name = 'teacher/attendance-list.html'
+    template_name = 'teacher/class-test-exam-time-list.html'
 
     def get(self, request, classes, section, subject_id):
 
-        now = datetime.datetime.now()
-
-        attendance_lists = teacher_model.Attendence.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).order_by('-id').all()
-        count = teacher_model.Attendence.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).count()
+        exam_lists = teacher_model.ClassTestExamTime.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).order_by('-id').all()
+        count = teacher_model.ClassTestExamTime.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).count()
 
 
         variables = {
-            'attendance_lists': attendance_lists,
+            'exam_lists': exam_lists,
             'count': count,
-            'now': now.date,
             'subject_id': subject_id,
             'classes': classes,
             'section': section,
@@ -334,6 +332,34 @@ class ExamAndMarksSubjectAllExam(TeacherPermissionMixin, View):
 
     def post(self, request):
         pass
+
+
+#create class test exam routine
+class ExamAndMarksExamCreate(TeacherPermissionMixin, View):
+    template_name = 'teacher/class-test-exam-time-create.html'
+
+    def get(self, request, classes, section, subject_id):
+
+        exam_routine_form = forms.ClassTestExamTimeForm()
+
+        variables = {
+            'exam_routine_form': exam_routine_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, classes, section, subject_id):
+        exam_routine_form = forms.ClassTestExamTimeForm(request.POST or None)
+
+        if exam_routine_form.is_valid():
+            deploy = exam_routine_form.deploy(request, classes, section, subject_id)
+
+        variables = {
+            'exam_routine_form': exam_routine_form,
+        }
+
+        return render(request, self.template_name, variables)
+
 
 
 

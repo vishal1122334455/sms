@@ -44,6 +44,7 @@ class ClassTestExamTime(models.Model):
     subject = models.ForeignKey(mod.Subject, on_delete=models.CASCADE)
     teachers = models.ForeignKey(mod.UserProfile, on_delete=None)
 
+    exam_name = models.CharField(max_length=255, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
 

@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^exam-and-marks/(?P<classes>[a-zA-Z0-9-_]+)/section-list/$', views.ExamAndMarksSectionList.as_view(), name='exam-and-marks-section-list'),
     url(r'^exam-and-marks/(?P<classes>[a-zA-Z0-9-_]+)/(?P<section>[a-zA-Z0-9-_]+)/subject-list/$', views.ExamAndMarksSubjectList.as_view(), name='exam-and-marks-subject-list'),
     url(r'^exam-and-marks/(?P<classes>[a-zA-Z0-9-_]+)/(?P<section>[a-zA-Z0-9-_]+)/(?P<subject_id>[0-9]+)/all/$', views.ExamAndMarksSubjectAllExam.as_view(), name='exam-and-marks-subject-all-exam'),
+    url(r'^exam-and-marks/(?P<classes>[a-zA-Z0-9-_]+)/(?P<section>[a-zA-Z0-9-_]+)/(?P<subject_id>[0-9]+)/create/$', views.ExamAndMarksExamCreate.as_view(), name='exam-and-marks-exam-create'),
 
 
     #end exam and marks module
