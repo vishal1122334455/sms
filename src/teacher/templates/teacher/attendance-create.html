@@ -18,10 +18,17 @@
         <div class="col s12 m12 l12">
             <form method="post">
                 {% for student in students %}
-                    <p class="col s6 m4 l3" style="margin-top: 30px;">
-                        <input type="checkbox" class="checkbox_stu" value="{{ student.username }}" id="{{ student.id }}" />
-                        <label for="{{ student.id }}">{{ student.username }}-{{ student.student.roll }}</label>
-                    </p>
+                        {% if student in present_lists %}
+                            <p class="col s6 m4 l3" style="margin-top: 30px;">
+                                <input type="checkbox" checked class="checkbox_stu" value="{{ student.username }}" id="{{ student.id }}" />
+                                <label for="{{ student.id }}">{{ student.username }}-{{ student.student.roll }}</label>
+                            </p>
+                        {% else %}
+                            <p class="col s6 m4 l3" style="margin-top: 30px;">
+                                <input type="checkbox" class="checkbox_stu" value="{{ student.username }}" id="{{ student.id }}" />
+                                <label for="{{ student.id }}">{{ student.username }}-{{ student.student.roll }}</label>
+                            </p>
+                        {% endif %}
                 {% endfor %}
             </form>
         </div>

@@ -157,11 +157,16 @@ class AttendanceCreate(TeacherPermissionMixin, View):
         students = models.UserProfile.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section)).order_by('student__roll').all()
         count = models.UserProfile.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section)).count()
 
+        attendances = teacher_model.Attendence.objects.get(id=attendance_id)
+        present_lists = attendances.students.all()
+
+
         variables = {
             'now': now.date,
             'students': students,
             'count': count,
             'attendance_id': attendance_id,
+            'present_lists': present_lists,
         }
 
         return render(request, self.template_name, variables)
