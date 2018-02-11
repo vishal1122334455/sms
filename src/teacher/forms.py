@@ -27,6 +27,7 @@ class ClassTestExamTimeForm(forms.Form):
 
 
     def deploy(self, request, classes, section, subject_id):
+        exam_name = self.cleaned_data.get('exam_name')
         date = self.cleaned_data.get('date')
         time = self.cleaned_data.get('time')
 
@@ -34,6 +35,18 @@ class ClassTestExamTimeForm(forms.Form):
         section_obj = account_model.Section.objects.get(Q(school=request.user.school) & Q(classes=classes_obj) & Q(name=section))
         subject_obj = account_model.Subject.objects.get(Q(school=request.user.school) & Q(classes=classes_obj) & Q(id=subject_id))
 
-        deploy = models.ClassTestExamTime(school=request.user.school, classes=classes_obj, section=section_obj, subject=subject_obj, teachers=request.user, date=date, time=time)
+        deploy = models.ClassTestExamTime(school=request.user.school, classes=classes_obj, section=section_obj, subject=subject_obj, teachers=request.user, exam_name=exam_name, date=date, time=time)
         deploy.save()
 
+
+
+
+#edit class test exam time
+class EditClassTestExamTimeForm(forms.ModelForm):
+    exam_name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    date = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate datepicker'}))
+    time = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate timepicker'}))
+
+    class Meta:
+        model = models.ClassTestExamTime
+        fields = ('exam_name', 'date', 'time', )

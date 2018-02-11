@@ -56,8 +56,8 @@
                     </div>
 
                     <div class="card-action">
-                        <a href="#">Edit Exam Time</a>
-                        <a href="#">Delete This Exam</a>
+                        <a href="{% url 'teacher:exam-and-marks-exam-edit' pk=exam.pk %}">Edit Exam Time</a>
+                        <a href="{% url 'teacher:exam-and-marks-exam-delete' pk=exam.pk %}">Delete This Exam</a>
                     </div>
                 </div>
             </div>

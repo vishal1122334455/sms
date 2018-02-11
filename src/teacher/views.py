@@ -316,7 +316,7 @@ class ExamAndMarksSubjectAllExam(TeacherPermissionMixin, View):
 
     def get(self, request, classes, section, subject_id):
 
-        exam_lists = teacher_model.ClassTestExamTime.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).order_by('-id').all()
+        exam_lists = teacher_model.ClassTestExamTime.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).order_by('date').all()
         count = teacher_model.ClassTestExamTime.objects.filter(Q(school=request.user.school) & Q(classes__name=classes) & Q(section__name=section) & Q(subject__id=subject_id)).count()
 
 
@@ -361,6 +361,82 @@ class ExamAndMarksExamCreate(TeacherPermissionMixin, View):
         return render(request, self.template_name, variables)
 
 
+
+#edit class test exam routine
+class ExamAndMarksExamEdit(TeacherPermissionMixin, View):
+    template_name = 'teacher/class-test-exam-time-edit.html'
+
+    def get(self, request, pk):
+        get_object_or_404(teacher_model.ClassTestExamTime, pk=pk)
+
+        exam_routine_edit_form = forms.EditClassTestExamTimeForm(instance=teacher_model.ClassTestExamTime.objects.get(Q(school=request.user.school) & Q(pk=pk)))
+
+        variables = {
+            'exam_routine_edit_form': exam_routine_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(teacher_model.ClassTestExamTime, pk=pk)
+
+        exam_routine_edit_form = forms.EditClassTestExamTimeForm(request.POST or None, instance=teacher_model.ClassTestExamTime.objects.get(Q(school=request.user.school) & Q(pk=pk)))
+
+        if exam_routine_edit_form.is_valid():
+            exam_routine_edit_form.save()
+
+        variables = {
+            'exam_routine_edit_form': exam_routine_edit_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#exam delete
+class ExamAndMarksExamDelete(TeacherPermissionMixin, View):
+    template_name = 'teacher/class-test-exam-time-delete.html'
+
+    def get(self, request, pk):
+        get_object_or_404(teacher_model.ClassTestExamTime, pk=pk)
+
+        exam_obj = teacher_model.ClassTestExamTime.objects.filter(Q(pk=pk) & Q(school=request.user.school))
+
+        viewable_exam = False
+        if exam_obj:
+            viewable_exam = exam_obj
+
+        variables = {
+            'viewable_exam': viewable_exam,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        get_object_or_404(teacher_model.ClassTestExamTime, pk=pk)
+
+        exam_obj = teacher_model.ClassTestExamTime.objects.filter(Q(pk=pk) & Q(school=request.user.school))
+
+        viewable_exam = False
+        if exam_obj:
+            viewable_exam = exam_obj
+
+            if request.POST.get('yes') == 'yes':
+                exam_id = request.POST.get('exam_id')
+
+                exam_obj = teacher_model.ClassTestExamTime.objects.get(id=exam_id)
+                exam_obj.delete()
+
+                return redirect('teacher:exam-and-marks-class-list')
+
+            elif request.POST.get('no') == 'no':
+                return redirect('teacher:exam-and-marks-class-list')
+
+        variables = {
+            'viewable_exam': viewable_exam,
+        }
+
+        return render(request, self.template_name, variables)
 
 
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
