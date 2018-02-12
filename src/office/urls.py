@@ -99,8 +99,8 @@ urlpatterns = [
     url(r'^classroom/$', views.Classroom.as_view(), name='classroom'),
     url(r'^classroom/class-list/$', views.ClassroomClasslist.as_view(), name='classroom-classlist'),
     url(r'^classroom/(?P<classes>[a-zA-Z0-9]+)/section-list/$', views.ClassroomSectionlist.as_view(), name='classroom-sectionlist'),
-    url(r'^classroom/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9]+)/create/$', views.ClassroomCreate.as_view(), name='classroom-create'),
-    url(r'^classroom/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9]+)/view/$', views.ClassroomView.as_view(), name='classroom-view'),
+    url(r'^classroom/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9-_]+)/create/$', views.ClassroomCreate.as_view(), name='classroom-create'),
+    url(r'^classroom/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9-_]+)/view/$', views.ClassroomView.as_view(), name='classroom-view'),
     url(r'^classroom/(?P<pk>[0-9]+)/edit/$', views.ClassroomEdit.as_view(), name='classroom-edit'),
     url(r'^classroom/(?P<pk>[0-9]+)/delete/$', views.ClassroomDelete.as_view(), name='classroom-delete'),
 
@@ -128,6 +128,9 @@ urlpatterns = [
     #:::::::::::::::::::::::::::::::::
 
     url(r'^payment/$', views.Payment.as_view(), name='payment'),
+    url(r'^payment/class-list/$', views.PaymentClassList.as_view(), name='payment-class-list'),
+    url(r'^payment/(?P<classes>[a-zA-Z0-9]+)/section-list/$', views.PaymentSectionlist.as_view(), name='payment-section-list'),
+    url(r'^payment/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9-_]+)/create/$', views.PaymentEntry.as_view(), name='payment-entry'),
 
     #::::::end payment module url:::::
     #:::::::::::::::::::::::::::::::::

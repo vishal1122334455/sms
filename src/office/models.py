@@ -150,3 +150,38 @@ class Bus(models.Model):
     def __str__(self):
         return str(self.school.name) + "-" + str(self.name) + ":" + str(self.bus_route)
 
+
+
+#payment
+class Payment(models.Model):
+    school = models.ForeignKey(mod.School, on_delete=models.CASCADE)
+    classes = models.ForeignKey(mod.Class, on_delete=models.CASCADE)
+    section = models.ForeignKey(mod.Section, on_delete=models.CASCADE)
+    user = models.ForeignKey(mod.UserProfile, on_delete=None, related_name='receiver')
+    student = models.ForeignKey(mod.UserProfile, on_delete=None, related_name='payer')
+
+    #payment type will be exam/monthly fee
+    payment_type = models.CharField(max_length=255, null=True, blank=True)
+
+    #payment_as will be :
+    #if monthly then month name like: january, february etc
+    #if exam then : 1st_term, 2nd_term etc
+    payment_as = models.CharField(max_length=255, null=True, blank=True)
+    month = models.CharField(max_length=255, null=True, blank=True)
+
+    total = models.FloatField(null=True, blank=True)
+    paid_amount = models.FloatField(null=True, blank=True)
+
+    payment_status = models.CharField(max_length=255, null=True, blank=True)
+    payment_method = models.CharField(max_length=255, null=True, blank=True)
+
+    title = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(max_length=1000, null=True, blank=True)
+
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.school.name) + "-" + str(self.classes.name) + "-" + str(self.student.username)
+
+
+

@@ -741,3 +741,92 @@ class ChangePasswordForm(PasswordChangeForm):
         else:
             if new_password1 != new_password2:
                 raise forms.ValidationError("Password not matched!")
+
+
+
+
+#payment entry form
+payment_type = (
+        ('monthly_fees', 'Monthly Fees'),
+        ('exam_fees', 'Exam Fees'),
+        ('other', 'Other'),)
+
+
+months = (
+    ('january', 'January'),
+    ('february', 'February'),
+    ('march', 'March'),
+    ('april', 'April'),
+    ('may', 'May'),
+    ('june', 'June'),
+    ('july', 'July'),
+    ('august', 'August'),
+    ('september', 'September'),
+    ('october', 'October'),
+    ('november', 'November'),
+    ('december', 'December'),)
+
+
+payment_as = (
+    ('monthly', 'Monthly'),
+    ('1st_term', '1st Term'),
+    ('2nd_term', '2nd Term'),
+    ('final', 'Final'),
+    ('other', 'Other'),)
+
+payment_status = (
+    ('paid', 'Paid'),
+    ('due', 'Due'),)
+
+class PaymentForm(forms.Form):
+    def __init__(self,*args,**kwargs):
+        self.request = kwargs.pop('request')
+        self.classes = kwargs.pop('classes')
+        self.section = kwargs.pop('section')
+        super(PaymentForm, self).__init__(*args,**kwargs)
+
+        self.fields['student'].queryset = models.UserProfile.objects.filter(Q(school=self.request.user.school) & Q(classes=self.classes) & Q(section=self.section))
+
+
+    student = forms.ModelChoiceField(queryset=models.UserProfile.objects.all(), required=False,widget=forms.Select(attrs={'class':'input-field browser-default'}))
+    payment_type = forms.ChoiceField(choices=payment_type, required=False, widget=forms.Select(attrs={'class': 'validate browser-default'}))
+    payment_as = forms.ChoiceField(choices=payment_as, required=False, widget=forms.Select(attrs={'class': 'validate browser-default'}))
+    month = forms.ChoiceField(choices=months, required=False, widget=forms.Select(attrs={'class': 'validate browser-default'}))
+    total = forms.FloatField(required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    paid_amount = forms.FloatField(required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    payment_status = forms.ChoiceField(choices=payment_status, required=False, widget=forms.Select(attrs={'class': 'validate browser-default'}))
+    payment_method = forms.ChoiceField(choices=payment_method, required=False, widget=forms.Select(attrs={'class': 'validate browser-default'}))
+    title = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    description = forms.CharField(required=False, max_length=1000, widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}))
+
+
+    def clean(self):
+        student = self.cleaned_data.get('student')
+        payment_type = self.cleaned_data.get('payment_type')
+        payment_as = self.cleaned_data.get('payment_as')
+        month = self.cleaned_data.get('month')
+        total = self.cleaned_data.get('total')
+        paid_amount = self.cleaned_data.get('paid_amount')
+        payment_status = self.cleaned_data.get('payment_status')
+        payment_method = self.cleaned_data.get('payment_method')
+        title = self.cleaned_data.get('title')
+        description = self.cleaned_data.get('description')
+
+
+    def deploy(self):
+        student = self.cleaned_data.get('student')
+        payment_type = self.cleaned_data.get('payment_type')
+        payment_as = self.cleaned_data.get('payment_as')
+        month = self.cleaned_data.get('month')
+        total = self.cleaned_data.get('total')
+        paid_amount = self.cleaned_data.get('paid_amount')
+        payment_status = self.cleaned_data.get('payment_status')
+        payment_method = self.cleaned_data.get('payment_method')
+        title = self.cleaned_data.get('title')
+        description = self.cleaned_data.get('description')
+
+
+        deploy = office_model.Payment(school=self.request.user.school, classes=self.classes, section=self.section, user=self.request.user, student=student, payment_type=payment_type, payment_as=payment_as, month=month, total=total, paid_amount=paid_amount, payment_status=payment_status, payment_method=payment_method, title=title, description=description)
+
+        deploy.save()
+

@@ -1563,6 +1563,83 @@ class Payment(OfficePermissionMixin, View):
         pass
 
 
+
+#office payment:::class list
+class PaymentClassList(OfficePermissionMixin, View):
+    template_name = 'office/payment-class-list.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(Q(school__name=request.user.school.name)).all()
+        count = models.Class.objects.filter(Q(school__name=request.user.school.name)).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#office payment:::section list
+class PaymentSectionlist(OfficePermissionMixin, View):
+    template_name = 'office/payment-section-list.html'
+
+    def get(self, request, classes):
+
+        sections = models.Section.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).all()
+        count = models.Section.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).count()
+
+        variables = {
+            'sections': sections,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+
+#payment create
+class PaymentEntry(OfficePermissionMixin, View):
+    template_name = 'office/payment-create.html'
+
+    def get(self, request, classes, section):
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+        section_obj = models.Section.objects.get(Q(school=request.user.school) & Q(classes=classes_obj) & Q(name=section))
+
+        create_payment_form = forms.PaymentForm(request=request, classes=classes_obj, section=section_obj)
+
+        variables = {
+            'create_payment_form': create_payment_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, classes, section):
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+        section_obj = models.Section.objects.get(Q(school=request.user.school) & Q(classes=classes_obj) & Q(name=section))
+
+        create_payment_form = forms.PaymentForm(request.POST or None, request=request, classes=classes_obj, section=section_obj)
+
+        if create_payment_form.is_valid():
+            create_payment_form.deploy()
+
+        variables = {
+            'create_payment_form': create_payment_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
 #==========================================
 #==========================================
 #=======end payment orperation view========
