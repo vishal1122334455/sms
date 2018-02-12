@@ -1,0 +1,56 @@
+{% extends 'teacher-base.html' %}
+
+{% block title %}Teacher | Marks{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Teacher : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+    </div>
+
+    <!--member search section-->
+    {% if exam_lists %}
+        <div class="col s12 m12">
+            <h5>Exam Marks</h5>
+        </div>
+
+        <div class="row">
+            <div class="col s12 m12 l12">
+
+                <table class="bordered centered responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Roll</th>
+                            <th>Student Name</th>
+                            <th>Teacher</th>
+                            <th>Subject</th>
+                            <th>Exam Name</th>
+                            <th>Mark</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for exam in exam_lists %}
+                            <tr>
+                                <td><a href="{% url 'teacher:exam-and-marks-edit' pk=exam.id %}">{{ exam.student.student.roll }}</a></td>
+                                <td>{{ exam.student.username | title }}</td>
+                                <td>{{ exam.teachers.username | title }}</td>
+                                <td>{{ exam.subject.name | title }}</td>
+                                <td>{{ exam.exam.exam_name }}</td>
+                                <td>{{ exam.mark }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    {% else %}
+        <h4>No marks found!</h4>
+    {% endif %}
+    <!--end member search section-->
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

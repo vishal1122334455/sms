@@ -50,3 +50,20 @@ class ClassTestExamTime(models.Model):
 
     def __str__(self):
         return str(self.school.name) + "-" + str(self.classes.name) + "-" + str(self.section.name) + "-" + str(self.id)
+
+
+
+#class test exam marks
+class ClassTestExamMark(models.Model):
+    school = models.ForeignKey(mod.School, on_delete=models.CASCADE)
+    classes = models.ForeignKey(mod.Class, on_delete=models.CASCADE)
+    section = models.ForeignKey(mod.Section, on_delete=models.CASCADE)
+    subject = models.ForeignKey(mod.Subject, on_delete=models.CASCADE)
+    teachers = models.ForeignKey(mod.UserProfile, on_delete=None, related_name='adder')
+
+    student = models.ForeignKey(mod.UserProfile, on_delete=None, related_name='added', null=True, blank=True)
+    exam = models.ForeignKey(ClassTestExamTime, on_delete=models.CASCADE)
+    mark = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.school.name) + "-" + str(self.classes.name) + "-" + str(self.section.name) + "-" + str(self.exam.id)

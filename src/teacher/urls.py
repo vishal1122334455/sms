@@ -32,6 +32,13 @@ urlpatterns = [
     url(r'^exam-and-marks/(?P<pk>[0-9]+)/delete/$', views.ExamAndMarksExamDelete.as_view(), name='exam-and-marks-exam-delete'),
 
 
+    url(r'^exam-and-marks/(?P<classes>[a-zA-Z0-9-_]+)/(?P<section>[a-zA-Z0-9-_]+)/(?P<subject_id>[0-9]+)/(?P<exam_id>[0-9]+)/student/$', views.ExamAndMarksExamStudent.as_view(), name='exam-and-marks-exam-student'),
+    url(r'^exam-and-marks/(?P<exam_id>[0-9]+)/marks/$', views.ExamAndMarksView.as_view(), name='exam-and-marks-view'),
+
+    url(r'^exam-and-marks/mark/(?P<pk>[0-9]+)/edit/$', views.ExamAndMarksEdit.as_view(), name='exam-and-marks-edit'),
+    url(r'^exam-and-marks/mark/(?P<pk>[0-9]+)/delete/$', views.ExamAndMarksDelete.as_view(), name='exam-and-marks-delete'),
+
+
     #end exam and marks module
 
 

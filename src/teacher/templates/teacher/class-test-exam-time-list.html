@@ -56,8 +56,17 @@
                     </div>
 
                     <div class="card-action">
-                        <a href="{% url 'teacher:exam-and-marks-exam-edit' pk=exam.pk %}">Edit Exam Time</a>
-                        <a href="{% url 'teacher:exam-and-marks-exam-delete' pk=exam.pk %}">Delete This Exam</a>
+                        <div class="row">
+                            <div class="col s12 m12 l12">
+                                <a href="{% url 'teacher:exam-and-marks-exam-edit' pk=exam.pk %}">Edit Exam Time</a>
+                                <a href="{% url 'teacher:exam-and-marks-exam-delete' pk=exam.pk %}">Delete This Exam</a>
+                            </div>
+
+                            <div class="col s12 m12 l12" style="margin-top: 20px;">
+                                <a href="{% url 'teacher:exam-and-marks-exam-student' classes=classes section=section subject_id=subject_id exam_id=exam.id %}">Publish Mark For This Exam</a>
+                                <a href="{% url 'teacher:exam-and-marks-view' exam_id=exam.id %}">View Marks</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
