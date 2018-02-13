@@ -50,7 +50,7 @@
         </form>
     </div>
 
-
+    {% if due_lists %}
     <div class="col s12 m12 l12">
         <table class="bordered centered responsive-table">
             <thead>
@@ -74,6 +74,9 @@
             </tbody>
         </table>
     </div>
+    {% else %}
+        <h5>No Due list Found!</h5>
+    {% endif %}
 
 {% endblock %}
 
