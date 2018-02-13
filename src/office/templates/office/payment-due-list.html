@@ -1,0 +1,82 @@
+{% extends 'office-base.html' %}
+
+{% block title %}Office | Payment Due List{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Official : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+    </div>
+
+
+    <div class="col s12 m12 l12">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="col s6 m3" style="margin-top: 20px;">
+                Select Payment Type:
+                {{ due_form.payment_type }}
+            </div>
+
+            <div class="col s6 m3" style="margin-top: 20px;">
+                Select Payment As:
+                {{ due_form.payment_as }}
+            </div>
+
+            <div class="col s6 m3" style="margin-top: 20px;">
+                Select Month:
+                {{ due_form.month }}
+            </div>
+
+            <div class="input-field col s6 m3" style="margin-top: 40px;">
+                {{ due_form.title }}
+                <label for="icon_prefix white-text">Title</label>
+            </div>
+
+            {% if due_form.non_field_errors %}
+                {% for error in due_form.non_field_errors %}
+                    <div class="col s12 m12 l12 center-align">
+                        <p style="color: red; font-size: 20px;">
+                            {{ error }}
+                        </p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="col s12 m12 l12 center-align" style="margin-bottom: 20px; margin-top: 30px;">
+                <button class="btn waves-effect waves-light" type="submit" style="">Search
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="col s12 m12 l12">
+        <table class="bordered centered responsive-table">
+            <thead>
+                <tr>
+                    <th>Roll</th>
+                    <th>Student Name</th>
+                    <th>Class</th>
+                    <th>Section</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for due in due_lists %}
+                    <tr>
+                        <td>{{ due.student.roll }}</td>
+                        <td>{{ due.username }}</td>
+                        <td>{{ due.classes.name }}</td>
+                        <td>{{ due.section.name }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

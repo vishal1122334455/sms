@@ -1640,6 +1640,46 @@ class PaymentEntry(OfficePermissionMixin, View):
 
 
 
+
+class PaymentDueList(OfficePermissionMixin, View):
+    template_name = 'office/payment-due-list.html'
+
+    def get(self, request, classes, section):
+
+
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+        section_obj = models.Section.objects.get(Q(school=request.user.school) & Q(classes=classes_obj) & Q(name=section))
+
+        due_form = forms.DueListSearchForm()
+
+        variables = {
+            'due_form': due_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, classes, section):
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+        section_obj = models.Section.objects.get(Q(school=request.user.school) & Q(classes=classes_obj) & Q(name=section))
+
+        due_form = forms.DueListSearchForm(request.POST or None)
+
+        due_lists = None
+        if due_form.is_valid():
+            print('sd')
+            due_lists = due_form.deploy(request, classes_obj, section_obj)
+
+        variables = {
+            'due_form': due_form,
+            'due_lists': due_lists,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+
+
 #==========================================
 #==========================================
 #=======end payment orperation view========

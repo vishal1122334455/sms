@@ -32,7 +32,7 @@
                         <div class="row">
                             <div class="col s12 m12 l12">
                                 <a href="{% url 'office:payment-entry' classes=section.classes.name section=section.name %}">Entry Payment</a>
-                                <a href="#">Due List</a>
+                                <a href="{% url 'office:payment-due-list' classes=section.classes.name section=section.name %}">Due List</a>
                             </div>
                         </div>
                     </div>

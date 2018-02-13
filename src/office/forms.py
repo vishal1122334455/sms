@@ -830,3 +830,48 @@ class PaymentForm(forms.Form):
 
         deploy.save()
 
+
+
+
+#due list search form
+class DueListSearchForm(forms.Form):
+    payment_type = forms.ChoiceField(choices=payment_type, required=False, widget=forms.Select(attrs={'class': 'validate browser-default'}))
+    payment_as = forms.ChoiceField(choices=payment_as, required=False, widget=forms.Select(attrs={'class': 'validate browser-default'}))
+    month = forms.ChoiceField(choices=months, required=False, widget=forms.Select(attrs={'class': 'validate browser-default'}))
+    title = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+
+    def clean(self):
+        payment_type = self.cleaned_data.get('payment_type')
+        payment_as = self.cleaned_data.get('payment_as')
+        month = self.cleaned_data.get('month')
+        title = self.cleaned_data.get('title')
+
+
+    def deploy(self, request, classes, section):
+        payment_type = self.cleaned_data.get('payment_type')
+        payment_as = self.cleaned_data.get('payment_as')
+        month = self.cleaned_data.get('month')
+        title = self.cleaned_data.get('title')
+
+        if payment_type == 'monthly_fees':
+            payment_confirm_list = office_model.Payment.objects.filter(Q(school=request.user.school) & Q(classes=classes) & Q(section=section) & Q(payment_type='monthly_fees') & Q(month=month))
+
+        elif payment_type == 'exam_fees':
+            payment_confirm_list = office_model.Payment.objects.filter(Q(school=request.user.school) & Q(classes=classes) & Q(section=section) & Q(payment_type='exam_fees') & Q(payment_as=payment_as))
+
+        elif payment_type == 'other':
+            payment_confirm_list = office_model.Payment.objects.filter(Q(school=request.user.school) & Q(classes=classes) & Q(section=section) & Q(payment_type='other') & Q(payment_as=payment_as) & Q(title=title))
+
+
+        list = []
+        for payment_confirm in payment_confirm_list:
+            id = payment_confirm.student.id
+            list.append(id)
+
+        due_lists = models.UserProfile.objects.filter(Q(school=request.user.school) & Q(classes=classes) & Q(section=section)).exclude(id__in=list).order_by('student__roll')
+
+
+        return due_lists
+
+

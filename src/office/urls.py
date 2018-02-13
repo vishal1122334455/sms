@@ -131,6 +131,7 @@ urlpatterns = [
     url(r'^payment/class-list/$', views.PaymentClassList.as_view(), name='payment-class-list'),
     url(r'^payment/(?P<classes>[a-zA-Z0-9]+)/section-list/$', views.PaymentSectionlist.as_view(), name='payment-section-list'),
     url(r'^payment/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9-_]+)/create/$', views.PaymentEntry.as_view(), name='payment-entry'),
+    url(r'^payment/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9-_]+)/due/$', views.PaymentDueList.as_view(), name='payment-due-list'),
 
     #::::::end payment module url:::::
     #:::::::::::::::::::::::::::::::::
