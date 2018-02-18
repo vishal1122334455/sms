@@ -67,3 +67,18 @@ class ClassTestExamMark(models.Model):
 
     def __str__(self):
         return str(self.school.name) + "-" + str(self.classes.name) + "-" + str(self.section.name) + "-" + str(self.exam.id)
+
+
+
+#office notice model
+class Notice(models.Model):
+    school = models.ForeignKey(mod.School, on_delete=models.CASCADE, related_name='teacher_school')
+    classes = models.ForeignKey(mod.Class, on_delete=models.CASCADE, related_name='student_class')
+    user = models.ForeignKey(mod.UserProfile, on_delete=models.CASCADE, related_name='teacher_notice')
+
+    title = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(max_length=1000, null=True, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.school.name) + "-" + str(self.classes.name) + "-" + str(self.user.username)

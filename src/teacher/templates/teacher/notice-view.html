@@ -1,10 +1,10 @@
-{% extends 'office-base.html' %}
+{% extends 'teacher-base.html' %}
 
-{% block title %}Office | Notice View{% endblock %}
+{% block title %}Teacher | Notice View{% endblock %}
 
 {% block body %}
     <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
-        <h5>Official : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+        <h5>Teacher : <span style="color: red;">{{ request.user.school | title }}</span></h5>
     </div>
 
     <!--member search section-->
@@ -21,14 +21,14 @@
 
                         <p>
                             <b>Description:</b>
-                            <br>{{ notice.description }}
+                            <br>{{ notice.description | safe }}
                         </p>
                     </div>
 
                     <div class="card-action">
                         {% ifequal notice.user request.user %}
-                            <a href="{% url 'office:notice-edit' pk=notice.id %}">Edit Notice</a>
-                            <a href="{% url 'office:notice-delete' pk=notice.id %}">Delete Notice</a>
+                            <a href="{% url 'teacher:notice-edit' pk=notice.id %}">Edit Notice</a>
+                            <a href="{% url 'teacher:notice-delete' pk=notice.id %}">Delete Notice</a>
                         {% endifequal %}
                     </div>
                 </div>
