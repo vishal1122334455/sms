@@ -77,12 +77,31 @@ urlpatterns = [
     #:::::::::::::::::::::::::::::::::
 
 
-    #::::start schedule module url::::
+    #:::::start teacher module url::::
     #:::::::::::::::::::::::::::::::::
 
 
 
     url(r'^teacher-detail/$', views.TeacherDetail.as_view(), name='teacher-detail'),
+
+
+    #::::end schedule module url::::
+    #:::::::::::::::::::::::::::::::
+
+
+
+    #::::start schedule module url::::
+    #:::::::::::::::::::::::::::::::::
+
+
+
+    url(r'^student/$', views.StudentHome.as_view(), name='student-home'),
+    url(r'^student/class-list/$', views.StudentClassList.as_view(), name='student-class-list'),
+    url(r'^student/class-list/(?P<classes>[a-zA-Z0-9]+)/$', views.StudentSectionList.as_view(), name='student-section-list'),
+    url(r'^student/class-list/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9-_]+)/$', views.StudentList.as_view(), name='student-list'),
+
+    url(r'^student/search/$', views.StudentSearch.as_view(), name='student-search'),
+    url(r'^student/detail/(?P<pk>[0-9]+)/$', views.StudentDetail.as_view(), name='student-detail'),
 
 
     #::::end schedule module url::::

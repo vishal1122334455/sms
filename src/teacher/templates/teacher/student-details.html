@@ -1,0 +1,37 @@
+{% extends 'teacher-base.html' %}
+
+{% block title %}Teacher-Detail | Home{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Teacher : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+    </div>
+
+    <!--member registration section-->
+    {% if students %}
+        {% for student in students %}
+            <div class="col s12 m6">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">
+                            <a class="white-text" href="{% url 'teacher:student-detail' pk=student.pk %}">{{ student.username }}</a>
+                        </span>
+
+                        <p>
+                            Name : {{ student.name | title }}
+                        </p>
+
+                        <p>
+                            Roll : {{ student.student.roll }}
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h5>No Student found!</h5>
+    {% endif %}
+    <!--end member registration section-->
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'teacher-base.html' %}
+
+{% block title %}Teacher | Student{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Teacher : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+    </div>
+
+    <!--member registration section-->
+    <div class="col s12 m6">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Student List</span>
+                <p>
+                    In this section teacher can view student.
+                </p>
+            </div>
+
+            <div class="card-action">
+                <a href="{% url 'teacher:student-class-list' %}">Class List</a>
+            </div>
+        </div>
+    </div>
+    <!--end member registration section-->
+
+
+    <!--member registration section-->
+    <div class="col s12 m6">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Search Student</span>
+                <p>
+                    In this section teacher search student.
+                </p>
+            </div>
+
+            <div class="card-action">
+                <a href="{% url 'teacher:student-search' %}">View Operations</a>
+            </div>
+        </div>
+    </div>
+    <!--end member registration section-->
+
+{% endblock %}

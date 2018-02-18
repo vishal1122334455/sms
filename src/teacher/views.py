@@ -956,7 +956,153 @@ class TeacherDetail(TeacherPermissionMixin, View):
 
 #==========================================
 #==========================================
-#======start teacher orperation view=======
+#=======end teacher orperation view========
+#==========================================
+#==========================================
+
+
+#==========================================
+#==========================================
+#======start student orperation view=======
+#==========================================
+#==========================================
+
+
+
+#student detail view
+class StudentHome(TeacherPermissionMixin, View):
+    template_name = 'teacher/student-home.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+
+#teacher student:::class list
+class StudentClassList(TeacherPermissionMixin, View):
+    template_name = 'teacher/student-class-list.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(Q(school__name=request.user.school.name)).all()
+        count = models.Class.objects.filter(Q(school__name=request.user.school.name)).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office schedule:::section list
+class StudentSectionList(TeacherPermissionMixin, View):
+    template_name = 'teacher/student-section-list.html'
+
+    def get(self, request, classes):
+
+        sections = models.Section.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes)).all()
+        count = models.Section.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes)).count()
+
+        variables = {
+            'sections': sections,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+
+class StudentList(TeacherPermissionMixin, View):
+    template_name = 'teacher/student-details.html'
+
+    def get(self, request, classes, section):
+
+        students = models.UserProfile.objects.filter(Q(school=request.user.school) & Q(member_type__name='student') & Q(classes__name=classes) & Q(section__name=section)).order_by('student__roll').all()
+
+        variables = {
+            'students': students,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#student search view
+class StudentSearch(TeacherPermissionMixin, View):
+    template_name = 'teacher/search.html'
+
+    def get(self, request):
+        search_form = forms.SearchForm()
+
+        variables = {
+            'search_form': search_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        search_form = forms.SearchForm(request.POST or None)
+
+        queries = None
+        count = None
+        if search_form.is_valid():
+            queries, count = search_form.search(request)
+
+        variables = {
+            'search_form': search_form,
+            'queries': queries,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#member detail view
+class StudentDetail(TeacherPermissionMixin, View):
+    template_name = 'teacher/student-detail.html'
+
+    def get(self, request, pk):
+        get_object_or_404(models.UserProfile, pk=pk)
+
+        #requested user object
+        user_objects = models.UserProfile.objects.filter(pk=pk)
+
+        user_school_id = None
+        viewable_user = None
+
+        for user_obj in user_objects:
+            user_school_id = user_obj.school.id
+            member_type = user_obj.member_type.name
+
+        #compare admin school id to requested user school id for same school retrive
+        if user_school_id == request.user.school.id and member_type=='student':
+            viewable_user = user_objects
+
+        variables = {
+            'viewable_user': viewable_user,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request, pk):
+        pass
+
+
+#==========================================
+#==========================================
+#=======end student orperation view========
 #==========================================
 #==========================================
 

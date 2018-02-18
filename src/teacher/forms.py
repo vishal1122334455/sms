@@ -1,6 +1,7 @@
 from django import forms
 from . import models
 from django.db.models import Q
+import re
 
 from account import models as account_model
 
@@ -194,5 +195,46 @@ class NoticeSearchForm(forms.Form):
 
         count = models.Notice.objects.filter(Q(id=search_text) & Q(school=request.user.school)).count()
         query = models.Notice.objects.filter(Q(id=search_text) & Q(school=request.user.school)).all()
+
+        return query, count
+
+
+
+
+
+#student search form
+class SearchForm(forms.Form):
+    search_text = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+
+    def clean(self):
+        search_text = self.cleaned_data.get('search_text')
+
+    def identify_username_or_email(self, search_text):
+        is_email = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', search_text)
+
+        if is_email:
+            type = 'email'
+        else:
+            type = 'username'
+
+        return type
+
+
+    def search(self, request):
+        search_text = self.cleaned_data.get('search_text')
+
+        #admin school id for search in same school
+        admin_school_id = request.user.school.id
+
+        check_email_or_username = self.identify_username_or_email(search_text)
+
+        count = None
+        query = None
+        if check_email_or_username == 'email':
+            count = account_model.UserProfile.objects.filter(Q(email__contains=search_text) & Q(school__id=admin_school_id) & Q(member_type__name='student')).count()
+            query = account_model.UserProfile.objects.filter(Q(email__contains=search_text) & Q(school__id=admin_school_id) & Q(member_type__name='student')).all()
+        elif check_email_or_username == 'username':
+            count = account_model.UserProfile.objects.filter(Q(username__contains=search_text) & Q(school__id=admin_school_id) & Q(member_type__name='student')).count()
+            query = account_model.UserProfile.objects.filter(Q(username__contains=search_text) & Q(school__id=admin_school_id) & Q(member_type__name='student')).all()
 
         return query, count
