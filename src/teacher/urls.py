@@ -122,6 +122,19 @@ urlpatterns = [
     #:::::::::::::::::::::::::::::::::
 
 
+    #:::start class/section/subject:::
+    #:::::::::::::::::::::::::::::::::
+
+
+    url(r'^class-list/$', views.TeacherClassList.as_view(), name='teacher-class-list'),
+    url(r'^class-list/(?P<classes>[a-zA-Z0-9-_]+)/view/$', views.TeacherSubjectView.as_view(), name='teacher-subject-view'),
+    url(r'^class-list/(?P<classes>[a-zA-Z0-9-_]+)/section/view/$', views.TeacherSectionView.as_view(), name='teacher-section-view'),
+
+
+    #::::end class/section/subject::::
+    #:::::::::::::::::::::::::::::::::
+
+
     #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     #::::::::::::::::::::::::::::::::api::::::::::::::::::::::::::::
     #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

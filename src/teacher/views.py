@@ -1173,6 +1173,87 @@ class EventView(TeacherPermissionMixin, View):
 
 
 
+#==========================================
+#==========================================
+#=====start class/section/subject =========
+#==========================================
+#==========================================
+
+
+#class module
+class TeacherClassList(TeacherPermissionMixin, View):
+    template_name = 'teacher/teacher-class-list.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(Q(school=request.user.school)).all()
+        count = models.Class.objects.filter(Q(school=request.user.school)).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#class module
+class TeacherSubjectView(TeacherPermissionMixin, View):
+    template_name = 'teacher/teacher-subject-list.html'
+
+    def get(self, request, classes):
+
+        subjects = models.Subject.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).all()
+        count = models.Subject.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).count()
+
+
+        variables = {
+            'subjects': subjects,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#section view
+class TeacherSectionView(TeacherPermissionMixin, View):
+    template_name = 'teacher/teacher-section-view.html'
+
+    def get(self, request, classes):
+
+        sections = models.Section.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).all()
+        count = models.Section.objects.filter(Q(school=request.user.school) & Q(classes__name=classes)).count()
+
+
+        variables = {
+            'sections': sections,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+
+
+#==========================================
+#==========================================
+#=======end class/section/subject =========
+#==========================================
+#==========================================
+
+
 
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
