@@ -105,6 +105,20 @@ urlpatterns = [
 
 
     #::::end schedule module url::::
+    #:::::::::::::::::::::::::::::::
+
+
+
+    #::::::start event module url:::::
+    #:::::::::::::::::::::::::::::::::
+
+
+    url(r'^event/$', views.Event.as_view(), name='event'),
+    url(r'^event/list/$', views.EventList.as_view(), name='event-list'),
+    url(r'^event/list/(?P<pk>[0-9]+)/$', views.EventView.as_view(), name='event-view'),
+
+
+    #:::::::end event module url::::::
     #:::::::::::::::::::::::::::::::::
 
 

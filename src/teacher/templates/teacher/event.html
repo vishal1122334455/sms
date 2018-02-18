@@ -1,0 +1,27 @@
+{% extends 'teacher-base.html' %}
+
+{% block title %}Teacher | Event{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Teacher : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+        <h5>Event</h5>
+    </div>
+
+    <!--exam routine section-->
+    <div class="col s12 m6">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">View Upcomming Event</span>
+                <p>
+                    In this section teacher can view all event.
+                </p>
+            </div>
+
+            <div class="card-action">
+                <a href="{% url 'teacher:event-list' %}">Event List</a>
+            </div>
+        </div>
+    </div>
+    <!--end exam routine section-->
+{% endblock %}

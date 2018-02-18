@@ -1111,10 +1111,65 @@ class StudentDetail(TeacherPermissionMixin, View):
 
 #==========================================
 #==========================================
-#======end teacher orperation view=========
+#======start event orperation view=========
 #==========================================
 #==========================================
 
+#event
+class Event(TeacherPermissionMixin, View):
+    template_name = 'teacher/event.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#office event:::list
+class EventList(TeacherPermissionMixin, View):
+    template_name = 'teacher/event-list.html'
+
+    def get(self, request):
+
+        events = office_model.Event.objects.filter(Q(school=request.user.school)).order_by('-id').all()
+        count = office_model.Event.objects.filter(Q(school=request.user.school)).count()
+
+        variables = {
+            'events': events,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office event:::list
+class EventView(TeacherPermissionMixin, View):
+    template_name = 'teacher/event-view.html'
+
+    def get(self, request, pk):
+
+        events = office_model.Event.objects.filter(Q(school=request.user.school) & Q(pk=pk)).all()
+
+        variables = {
+            'events': events,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#==========================================
+#==========================================
+#=======end event orperation view==========
+#==========================================
+#==========================================
 
 
 
