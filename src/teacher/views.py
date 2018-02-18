@@ -6,6 +6,7 @@ from django.http import JsonResponse
 
 from account import models
 from . import models as teacher_model
+from office import models as office_model
 from . import forms
 
 
@@ -820,6 +821,116 @@ class NoticeSearch(TeacherPermissionMixin, View):
 #=======end notice orperation view=========
 #==========================================
 #==========================================
+
+
+
+
+
+#==========================================
+#==========================================
+#=====start schedule orperation view=======
+#==========================================
+#==========================================
+
+
+#office schedule
+class Schedule(TeacherPermissionMixin, View):
+    template_name = 'teacher/schedule.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        pass
+
+
+#office schedule:::class list
+class ClassList(TeacherPermissionMixin, View):
+    template_name = 'teacher/class-list.html'
+
+    def get(self, request):
+
+        classes = models.Class.objects.filter(Q(school__name=request.user.school.name)).all()
+        count = models.Class.objects.filter(Q(school__name=request.user.school.name)).count()
+
+        variables = {
+            'classes': classes,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#office schedule:::section list
+class SectionList(TeacherPermissionMixin, View):
+    template_name = 'teacher/section-list.html'
+
+    def get(self, request, classes):
+
+        sections = models.Section.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes)).all()
+        count = models.Section.objects.filter(Q(school__name=request.user.school.name) & Q(classes__name=classes)).count()
+
+        variables = {
+            'sections': sections,
+            'count': count,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+#routine view
+class RoutineView(TeacherPermissionMixin, View):
+    template_name = 'teacher/routine-view.html'
+
+    def get(self, request, classes, section):
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+        section_obj = models.Section.objects.get(Q(school=request.user.school) & Q(classes=classes_obj) & Q(name=section))
+
+        routines = office_model.ClassRoutine.objects.filter(Q(school=request.user.school) & Q(classes=classes_obj) & Q(section=section_obj)).all()
+
+        variables = {
+            'routines': routines,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#exam routine view
+class ExamRoutineView(TeacherPermissionMixin, View):
+    template_name = 'teacher/exam-routine-view.html'
+
+    def get(self, request, classes):
+        classes_obj = models.Class.objects.get(Q(school=request.user.school) & Q(name=classes))
+
+        routines = office_model.ExamRoutine.objects.filter(Q(school=request.user.school) & Q(classes=classes_obj)).all()
+
+        variables = {
+            'routines': routines,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+#==========================================
+#==========================================
+#======end schedule orperation view========
+#==========================================
+#==========================================
+
 
 
 

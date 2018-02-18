@@ -58,6 +58,25 @@ urlpatterns = [
     #:::::::::::::::::::::::::::::::::
 
 
+    #::::start schedule module url::::
+    #:::::::::::::::::::::::::::::::::
+
+
+    url(r'^schedule/$', views.Schedule.as_view(), name='schedule'),
+    url(r'^schedule/class-list/$', views.ClassList.as_view(), name='class-list'),
+    url(r'^schedule/class-list/(?P<classes>[a-zA-Z0-9]+)/$', views.SectionList.as_view(), name='section-list'),
+
+    #create routine
+    url(r'^schedule/class-list/(?P<classes>[a-zA-Z0-9]+)/(?P<section>[a-zA-Z0-9-_]+)/routine/view/$', views.RoutineView.as_view(), name='routine-view'),
+
+    #create exam routine
+    url(r'^schedule/class-list/(?P<classes>[a-zA-Z0-9]+)/exam-routine/view/$', views.ExamRoutineView.as_view(), name='exam-routine-view'),
+
+
+    #::::end schedule module url::::
+    #:::::::::::::::::::::::::::::::::
+
+
     #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     #::::::::::::::::::::::::::::::::api::::::::::::::::::::::::::::
     #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
