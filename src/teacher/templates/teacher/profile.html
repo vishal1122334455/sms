@@ -1,0 +1,140 @@
+{% extends 'teacher-base.html' %}
+
+{% block title %}Teacher | Profile{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 10px;">
+        <div class="col s6 offset-s3 m4 l3" style="padding: 0px;">
+            {% if request.user.photo %}
+                <img src="{{ request.user.photo.url }}" width="100%" alt="">
+            {% else %}
+                <img src="/media/no-img.jpg" width="100%" alt="{{ member.username }}">
+            {% endif %}
+        </div>
+
+        <div class="col s6 offset-s3 m8 l9" style="">
+            <h5>{{ request.user.username | title }}</h5>
+            <p>{{ request.user.email }}</p>
+
+            <form method="post" enctype="multipart/form-data" style="margin-top: 50px;">
+                {% csrf_token %}
+
+                <div class="input-field">
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Choose Photo</span>
+                            {{ pp_change_form.photo }}
+                        </div>
+
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="" style="margin-bottom: 20px;">
+                    <button class="btn waves-effect waves-light" name="pp_change" value="pp_change" type="submit" style="">Change Photo
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--exam routine section-->
+    <div class="col s12 m12">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Details</span>
+                <p>
+                    <b>User Name :</b> {{ request.user.username | title }}
+                </p>
+
+                <p>
+                    <b>Name :</b> {{ request.user.name | title }}
+                </p>
+
+                <p>
+                    <b>Email :</b> {{ request.user.email }}
+                </p>
+
+                <p>
+                    <b>Phone Number :</b> {{ request.user.phone }}
+                </p>
+
+                <p>
+                    <b>Address :</b> {{ request.user.address }}
+                </p>
+
+                <p>
+                    <b>School :</b> {{ request.user.school.name | title }}
+                </p>
+            </div>
+
+            <div class="card-action">
+                <a class="modal-trigger" href="#modal1"">Change Information</a>
+            </div>
+
+            <!--change information modal-->
+
+            <!-- Modal Structure -->
+            <div id="modal1" class="modal">
+                <div class="modal-content">
+                    <h4>Change Information</h4>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">account_circle</i>
+                            {{ info_change_form.name }}
+                            <label for="icon_prefix white-text">Name</label>
+                        </div>
+
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">email</i>
+                            {{ info_change_form.email }}
+                            <label for="icon_prefix white-text">Email</label>
+                        </div>
+
+                        <div style="" class="input-field col s12 m12 l12">
+                            <i class="material-icons prefix">location_on</i>
+                            {{ info_change_form.address }}
+                            <label for="icon_prefix white-text">Address</label>
+                        </div>
+
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">call</i>
+                            {{ info_change_form.phone }}
+                            <label for="icon_prefix white-text">Phone</label>
+                        </div>
+
+                        <div class="center-align" style="margin-bottom: 20px;">
+                            <button class="btn waves-effect waves-light" name="info_change" value="info_change" type="submit" style="">Change
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <!--end information change modal-->
+
+
+        </div>
+    </div>
+    <!--end exam routine section-->
+{% endblock %}
+
+
+{% block js %}
+
+<script>
+    $(document).ready(function(){
+        // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+        $('.modal').modal();
+      });
+</script>
+
+{% endblock %}

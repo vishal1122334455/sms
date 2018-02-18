@@ -2,6 +2,7 @@ from django import forms
 from . import models
 from django.db.models import Q
 import re
+from django.contrib.auth.forms import PasswordChangeForm
 
 from account import models as account_model
 
@@ -238,3 +239,52 @@ class SearchForm(forms.Form):
             query = account_model.UserProfile.objects.filter(Q(username__contains=search_text) & Q(school__id=admin_school_id) & Q(member_type__name='student')).all()
 
         return query, count
+
+
+
+
+#profile update form
+class ProfileUpdateForm(forms.ModelForm):
+    name = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    email = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate', 'id': 'email'}))
+    phone = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'validate'}))
+    address = forms.CharField( required=False, max_length= 1000 ,widget=forms.Textarea(attrs={'class': 'validate materialize-textarea'}) )
+
+    class Meta:
+        model = account_model.UserProfile
+        fields = ('name', 'email', 'phone', 'address')
+
+
+
+#profile picture upload form
+class ProfilePictureUploadForm(forms.ModelForm):
+    photo = forms.ImageField(required=False)
+
+    class Meta:
+        model = account_model.UserProfile
+        fields = ('photo', )
+
+    def clean(self):
+        photo = self.cleaned_data.get('photo')
+
+        if photo == None:
+            raise forms.ValidationError('Select photo to upload!')
+
+
+
+#change password form
+class ChangePasswordForm(PasswordChangeForm):
+    old_password = forms.CharField(label='Old Password', max_length=20, required=False, widget=forms.PasswordInput(attrs={'class': 'validate'}))
+    new_password1 = forms.CharField(label='New Password', max_length=20, required=False, widget=forms.PasswordInput(attrs={'class': 'validate'}))
+    new_password2 = forms.CharField(label='Confirm Password', max_length=20, required=False, widget=forms.PasswordInput(attrs={'class': 'validate'}))
+
+    def clean(self):
+        old_password = self.cleaned_data.get('old_password')
+        new_password1 = self.cleaned_data.get('new_password1')
+        new_password2 = self.cleaned_data.get('new_password2')
+
+        if len(new_password1) < 8:
+            raise forms.ValidationError("Password is too short!")
+        else:
+            if new_password1 != new_password2:
+                raise forms.ValidationError("Password not matched!")

@@ -2739,6 +2739,7 @@ class Profile(OfficePermissionMixin, View):
         if request.POST.get('pp_change') == 'pp_change':
             if pp_change_form.is_valid():
                 pp_change_form.save()
+                return redirect('office:profile')
 
 
         if request.POST.get('info_change') == 'info_change':

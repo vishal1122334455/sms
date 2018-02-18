@@ -3,6 +3,7 @@ from django.views import View
 from django.db.models import Q
 import datetime
 from django.http import JsonResponse
+from django.contrib.auth import update_session_auth_hash
 
 from account import models
 from . import models as teacher_model
@@ -1243,6 +1244,78 @@ class TeacherSectionView(TeacherPermissionMixin, View):
     def post(self, request):
         pass
 
+
+
+
+
+#user profile update
+class Profile(TeacherPermissionMixin, View):
+    template_name = 'teacher/profile.html'
+
+    def get(self, request):
+
+        pp_change_form = forms.ProfilePictureUploadForm()
+        info_change_form = forms.ProfileUpdateForm(instance=models.UserProfile.objects.get(id=request.user.id))
+
+        variables = {
+            'pp_change_form': pp_change_form,
+            'info_change_form': info_change_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pp_change_form = forms.ProfilePictureUploadForm(request.POST or None, request.FILES, instance=models.UserProfile.objects.get(id=request.user.id))
+        info_change_form = forms.ProfileUpdateForm(request.POST or None, instance=models.UserProfile.objects.get(id=request.user.id))
+
+        if request.POST.get('pp_change') == 'pp_change':
+            if pp_change_form.is_valid():
+                pp_change_form.save()
+                return redirect('teacher:profile')
+
+
+        if request.POST.get('info_change') == 'info_change':
+            if info_change_form.is_valid():
+                info_change_form.save()
+                return redirect('teacher:profile')
+
+
+        variables = {
+            'pp_change_form': pp_change_form,
+            'info_change_form': info_change_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+
+
+#change password
+class ChangePassword(TeacherPermissionMixin, View):
+    template_name = 'teacher/change-password.html'
+
+    def get(self, request):
+        change_password_form = forms.ChangePasswordForm(request.user)
+
+        variables = {
+            'change_password_form': change_password_form,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        change_password_form = forms.ChangePasswordForm(data=request.POST or None, user=request.user)
+
+        if change_password_form.is_valid():
+            change_password_form.save()
+            update_session_auth_hash(request, change_password_form.user)
+
+            return redirect('teacher:profile')
+
+        variables = {
+            'change_password_form': change_password_form,
+        }
+
+        return render(request, self.template_name, variables)
 
 
 
