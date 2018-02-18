@@ -933,6 +933,44 @@ class ExamRoutineView(TeacherPermissionMixin, View):
 
 
 
+#teacher detail view
+class TeacherDetail(TeacherPermissionMixin, View):
+    template_name = 'teacher/teacher-details.html'
+
+    def get(self, request):
+
+        teachers = models.UserProfile.objects.filter(Q(school=request.user.school) & Q(member_type__name='teacher')).all()
+
+        variables = {
+            'teachers': teachers,
+        }
+
+        return render(request, self.template_name, variables)
+
+    def post(self, request):
+        pass
+
+
+
+
+
+#==========================================
+#==========================================
+#======start teacher orperation view=======
+#==========================================
+#==========================================
+
+
+
+
+#==========================================
+#==========================================
+#======end teacher orperation view=========
+#==========================================
+#==========================================
+
+
+
 
 
 #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
