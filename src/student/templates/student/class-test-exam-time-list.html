@@ -1,0 +1,63 @@
+{% extends 'student-base.html' %}
+
+{% block title %}Student | Exam List{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Student : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+        <p>Class: {{ request.user.classes.name | title }}</p>
+        <p>Section: {{ request.user.section.name | title }}</p>
+    </div>
+
+    <!--member search section-->
+    {% if exam_lists %}
+        <div class="col s12 m12">
+            <h5>Total {{ count }} class test exam found : </h5>
+        </div>
+
+        {% for exam in exam_lists %}
+            <div class="col s12 m12">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">Date : {{ exam.date }}</span>
+
+                        <p>
+                            School: {{ exam.school.name | title }}
+                        </p>
+
+                        <p>
+                            Class: {{ exam.classes.name | title }}
+                        </p>
+
+                        <p>
+                            Section: {{ exam.section.name | title }}
+                        </p>
+
+                        <p>
+                            Subject: {{ exam.subject.name | title }}
+                        </p>
+
+                        <p>
+                            Date: {{ exam.date }}
+                        </p>
+
+                        <p>
+                            Time: {{ exam.time }}
+                        </p>
+
+                        <p>
+                            Teacher: {{ exam.teachers.username | title }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h4>No exam found!</h4>
+    {% endif %}
+    <!--end member search section-->
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

@@ -90,7 +90,7 @@ urlpatterns = [
 
 
 
-    #::::start schedule module url::::
+    #::::start student module url::::
     #:::::::::::::::::::::::::::::::::
 
 
@@ -104,7 +104,7 @@ urlpatterns = [
     url(r'^student/detail/(?P<pk>[0-9]+)/$', views.StudentDetail.as_view(), name='student-detail'),
 
 
-    #::::end schedule module url::::
+    #::::end student module url::::
     #:::::::::::::::::::::::::::::::
 
 

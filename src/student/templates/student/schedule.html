@@ -1,0 +1,62 @@
+{% extends 'student-base.html' %}
+
+{% block title %}Student | Schedule{% endblock %}
+
+{% block body %}
+    <div class="col s12 m12 l12" style="margin-top: 30px; margin-bottom: 30px;">
+        <h5>Student : <span style="color: red;">{{ request.user.school | title }}</span></h5>
+        <h5>Schedule</h5>
+    </div>
+
+    <!--class routine section-->
+    <div class="col s12 m6">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Class Routine</span>
+                <p>
+                    In this section student can view class routine.
+                </p>
+            </div>
+
+            <div class="card-action">
+                <a href="{% url 'student:routine-view' %}">Class Routine</a>
+            </div>
+        </div>
+    </div>
+    <!--end class routine section-->
+
+    <!--exam routine section-->
+    <div class="col s12 m6">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Exam Routine</span>
+                <p>
+                    In this section student can view exam routine.
+                </p>
+            </div>
+
+            <div class="card-action">
+                <a href="{% url 'student:exam-routine-view' %}">Exam Routine</a>
+            </div>
+        </div>
+    </div>
+    <!--end exam routine section-->
+
+
+    <!--exam routine section-->
+    <div class="col s12 m6">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">Class Test Time & Date</span>
+                <p>
+                    In this section student can view class test time.
+                </p>
+            </div>
+
+            <div class="card-action">
+                <a href="{% url 'student:class-test-routine-view' %}">View</a>
+            </div>
+        </div>
+    </div>
+    <!--end exam routine section-->
+{% endblock %}
